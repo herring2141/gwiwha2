@@ -20,9 +20,10 @@
 <body>
   <header class="appbar">
     <button id="homeBtn" class="appbar__home" aria-label="홈">🏠</button>
-    <h1 class="appbar__title">귀화시험 연습</h1>
+    <h1 class="appbar__title" data-i18n="app.title">귀화시험 연습</h1>
+    <button id="langBtn" class="appbar__lang" title="언어 전환 / 切换语言">中文</button>
     <button id="syncBtn" class="appbar__sync" title="문제 동기화">
-      <span class="appbar__sync-icon">⟳</span><span class="appbar__sync-text">동기화</span>
+      <span class="appbar__sync-icon">⟳</span><span class="appbar__sync-text" data-i18n="app.sync">동기화</span>
     </button>
   </header>
 
@@ -35,28 +36,28 @@
       <div class="card-grid">
         <button class="menu-card menu-card--primary" data-go="mock">
           <span class="menu-card__icon">📝</span>
-          <span class="menu-card__title">모의고사 보기</span>
-          <span class="menu-card__sub">실제 시험처럼 36문항 풀기</span>
+          <span class="menu-card__title" data-i18n="home.mock.t">모의고사 보기</span>
+          <span class="menu-card__sub" data-i18n="home.mock.s">실제 시험처럼 풀기</span>
         </button>
         <button class="menu-card" data-go="practice">
           <span class="menu-card__icon">📚</span>
-          <span class="menu-card__title">영역별 연습</span>
-          <span class="menu-card__sub">한국어·역사·정치·사회·경제</span>
+          <span class="menu-card__title" data-i18n="home.practice.t">영역별 연습</span>
+          <span class="menu-card__sub" data-i18n="home.practice.s">8개 영역별로 풀기</span>
         </button>
         <button class="menu-card" data-go="writing">
           <span class="menu-card__icon">✍️</span>
-          <span class="menu-card__title">작문·구술 연습</span>
-          <span class="menu-card__sub">주제별 말하기·쓰기</span>
+          <span class="menu-card__title" data-i18n="home.writing.t">작문·구술 연습</span>
+          <span class="menu-card__sub" data-i18n="home.writing.s">주제별 말하기·쓰기</span>
         </button>
         <button class="menu-card" data-go="wrong">
           <span class="menu-card__icon">🔁</span>
-          <span class="menu-card__title">오답 노트</span>
+          <span class="menu-card__title" data-i18n="home.wrong.t">오답 노트</span>
           <span class="menu-card__sub" id="wrongCount">틀린 문제 0개</span>
         </button>
         <button class="menu-card" data-go="stats">
           <span class="menu-card__icon">📊</span>
-          <span class="menu-card__title">학습 통계</span>
-          <span class="menu-card__sub">정답률·기록 보기</span>
+          <span class="menu-card__title" data-i18n="home.stats.t">학습 통계</span>
+          <span class="menu-card__sub" data-i18n="home.stats.s">정답률·기록 보기</span>
         </button>
       </div>
 
@@ -65,34 +66,34 @@
 
     <!-- 영역 선택(연습) -->
     <section id="view-practice" class="view hidden">
-      <h2 class="view-title">영역별 연습</h2>
-      <p class="view-desc">한 문제씩 풀고 바로 정답·해설을 확인합니다.</p>
+      <h2 class="view-title" data-i18n="practice.title">영역별 연습</h2>
+      <p class="view-desc" data-i18n="practice.desc">한 문제씩 풀고 바로 정답·해설을 확인합니다.</p>
       <div id="categoryList" class="cat-list"></div>
     </section>
 
     <!-- 모의고사 표지 / 유의사항 -->
     <section id="view-examintro" class="view hidden">
       <div class="exam-cover">
-        <p class="exam-cover__org">사회통합프로그램 (KIIP)</p>
-        <h2 class="exam-cover__title">귀화용 종합평가</h2>
-        <p class="exam-cover__subtitle">필기시험 모의고사</p>
+        <p class="exam-cover__org" data-i18n="exam.org">사회통합프로그램 (KIIP)</p>
+        <h2 class="exam-cover__title" data-i18n="exam.title">귀화용 종합평가</h2>
+        <p class="exam-cover__subtitle" data-i18n="exam.subtitle">필기시험 모의고사</p>
         <div class="exam-cover__fields">
-          <label>성 명<input id="examName" type="text" placeholder="이름 입력" /></label>
-          <label>수험번호<input id="examNo" type="text" readonly /></label>
+          <label><span data-i18n="exam.name">성 명</span><input id="examName" type="text" data-i18n-ph="exam.namePh" placeholder="이름 입력" /></label>
+          <label><span data-i18n="exam.no">수험번호</span><input id="examNo" type="text" readonly /></label>
         </div>
         <div class="exam-notice">
-          <h3>유의사항</h3>
+          <h3 data-i18n="exam.noticeTitle">유의사항</h3>
           <ol>
-            <li>귀화용 종합평가는 <b>객관식 36문항(65점) + 작문형(10점) + 구술(25점) = 100점</b>, <b>60점 이상이면 합격</b>입니다.</li>
-            <li>이 모의고사는 <b>필기(객관식+작문)를 60분 안에</b> 풀고, 이어서 <b>구술 문항</b>까지 연습합니다.</li>
-            <li>객관식은 ①②③④ 중 하나를 고르고, 작문은 <b>200자 이내</b>로 작성합니다.</li>
-            <li>객관식만 자동 채점되며, 작문·구술은 모범답안·도움말로 스스로 점검합니다.</li>
-            <li>실제 시험의 구술은 별도 10분 세션입니다. 사회통합프로그램 5단계 수료 + 합격 시 <b>귀화 면접심사 면제</b>가 가능합니다.</li>
+            <li data-i18n-html="exam.n1">귀화용 종합평가는 <b>객관식 36문항(65점) + 작문형(10점) + 구술(25점) = 100점</b>, <b>60점 이상이면 합격</b>입니다.</li>
+            <li data-i18n-html="exam.n2">이 모의고사는 <b>필기(객관식+작문)를 60분 안에</b> 풀고, 이어서 <b>구술 문항</b>까지 연습합니다.</li>
+            <li data-i18n-html="exam.n3">객관식은 ①②③④ 중 하나를 고르고, 작문은 <b>200자 이내</b>로 작성합니다.</li>
+            <li data-i18n-html="exam.n4">객관식만 자동 채점되며, 작문·구술은 모범답안·도움말로 스스로 점검합니다.</li>
+            <li data-i18n-html="exam.n5">실제 시험의 구술은 별도 10분 세션입니다. 사회통합프로그램 5단계 수료 + 합격 시 <b>귀화 면접심사 면제</b>가 가능합니다.</li>
           </ol>
         </div>
         <div class="quiz-actions">
-          <button class="btn btn--ghost" data-go="home">취소</button>
-          <button class="btn btn--primary" id="examStartBtn">시험 시작</button>
+          <button class="btn btn--ghost" data-go="home" data-i18n="common.cancel">취소</button>
+          <button class="btn btn--primary" id="examStartBtn" data-i18n="exam.start">시험 시작</button>
         </div>
       </div>
     </section>
@@ -112,66 +113,66 @@
 
       <div id="writeArea" class="write-area hidden">
         <textarea id="writeInput" placeholder="여기에 답안을 작성하세요 (200자 이내)"></textarea>
-        <div class="write-area__meta"><span id="writeCount">0자</span> / 200자</div>
+        <div class="write-area__meta"><span id="writeCount">0자</span><span data-i18n="writeCount.suffix"> / 200자</span></div>
       </div>
 
       <div id="feedback" class="feedback hidden"></div>
 
       <div class="quiz-actions">
-        <button id="prevBtn" class="btn btn--ghost hidden">← 이전</button>
-        <button id="nextBtn" class="btn btn--primary">다음 →</button>
-        <button id="submitBtn" class="btn btn--primary hidden">제출하고 채점</button>
+        <button id="prevBtn" class="btn btn--ghost hidden" data-i18n="quiz.prev">← 이전</button>
+        <button id="nextBtn" class="btn btn--primary" data-i18n="quiz.next">다음 →</button>
+        <button id="submitBtn" class="btn btn--primary hidden" data-i18n="quiz.submit">제출하고 채점</button>
       </div>
     </section>
 
     <!-- 작문/구술 -->
     <section id="view-writing" class="view hidden">
-      <h2 class="view-title">작문·구술 연습</h2>
+      <h2 class="view-title" data-i18n="writing.title">작문·구술 연습</h2>
       <div class="seg" id="writingSeg">
-        <button class="seg__btn seg__btn--active" data-wt="writing">✍️ 작문</button>
-        <button class="seg__btn" data-wt="oral">🗣️ 구술</button>
+        <button class="seg__btn seg__btn--active" data-wt="writing" data-i18n="seg.writing">✍️ 작문</button>
+        <button class="seg__btn" data-wt="oral" data-i18n="seg.oral">🗣️ 구술</button>
       </div>
       <div id="writingList" class="writing-list"></div>
     </section>
 
     <!-- 결과 -->
     <section id="view-result" class="view hidden">
-      <h2 class="view-title">채점 결과</h2>
+      <h2 class="view-title" data-i18n="result.title">채점 결과</h2>
       <div class="score-card">
-        <div class="score-card__num"><span id="scorePct">0</span><small>점</small></div>
+        <div class="score-card__num"><span id="scorePct">0</span><small data-i18n="result.unit">점</small></div>
         <div class="score-card__detail">
           <div id="scoreFrac">0 / 0 정답</div>
           <div id="scorePass" class="score-card__pass"></div>
         </div>
       </div>
       <div id="catBreakdown" class="cat-breakdown"></div>
-      <h3 class="subhead">문제 다시보기</h3>
+      <h3 class="subhead" data-i18n="result.reviewHead">문제 다시보기</h3>
       <div id="reviewList" class="review-list"></div>
       <div class="quiz-actions">
-        <button class="btn btn--ghost" data-go="home">홈으로</button>
-        <button class="btn btn--primary" id="retryWrongBtn">틀린 문제만 다시 풀기</button>
+        <button class="btn btn--ghost" data-go="home" data-i18n="common.home">홈으로</button>
+        <button class="btn btn--primary" id="retryWrongBtn" data-i18n="result.retryWrong">틀린 문제만 다시 풀기</button>
       </div>
     </section>
 
     <!-- 오답노트 -->
     <section id="view-wrong" class="view hidden">
-      <h2 class="view-title">오답 노트</h2>
-      <p class="view-desc">틀렸던 문제들이 모입니다. 맞히면 목록에서 사라집니다.</p>
+      <h2 class="view-title" data-i18n="wrong.title">오답 노트</h2>
+      <p class="view-desc" data-i18n="wrong.desc">틀렸던 문제들이 모입니다. 맞히면 목록에서 사라집니다.</p>
       <div class="quiz-actions">
-        <button class="btn btn--primary" id="startWrongBtn">오답 문제 풀기</button>
-        <button class="btn btn--ghost" id="clearWrongBtn">오답노트 비우기</button>
+        <button class="btn btn--primary" id="startWrongBtn" data-i18n="wrong.start">오답 문제 풀기</button>
+        <button class="btn btn--ghost" id="clearWrongBtn" data-i18n="wrong.clear">오답노트 비우기</button>
       </div>
       <div id="wrongList" class="review-list"></div>
     </section>
 
     <!-- 통계 -->
     <section id="view-stats" class="view hidden">
-      <h2 class="view-title">학습 통계</h2>
+      <h2 class="view-title" data-i18n="stats.title">학습 통계</h2>
       <div id="statsBox" class="stats-box"></div>
-      <h3 class="subhead">최근 모의고사 기록</h3>
+      <h3 class="subhead" data-i18n="stats.recentHead">최근 모의고사 기록</h3>
       <div id="historyList" class="history-list"></div>
       <div class="quiz-actions">
-        <button class="btn btn--ghost" id="resetStatsBtn">통계 초기화</button>
+        <button class="btn btn--ghost" id="resetStatsBtn" data-i18n="stats.reset">통계 초기화</button>
       </div>
     </section>
 

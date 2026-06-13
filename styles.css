@@ -274,6 +274,22 @@ body.exam-mode .choice.is-selected .choice__num { color: var(--blue); }
 .review-item__write { background: #f8fafc; border-radius: 10px; padding: 10px 12px; margin: 6px 0; font-size: .95rem; white-space: pre-wrap; line-height: 1.7; }
 .review-item__write.empty-ans { color: var(--gray); font-style: italic; }
 
+/* ===== 언어 토글 버튼 ===== */
+.appbar__lang {
+  background: rgba(255, 255, 255, .18); border: 0; color: #fff;
+  font-size: .85rem; font-weight: 700; height: 38px; padding: 0 12px;
+  border-radius: 10px; cursor: pointer; white-space: nowrap;
+}
+
+/* ===== 중국어 병기(보조 번역) ===== */
+.zh {
+  display: block; font-size: .84em; color: var(--gray); font-weight: 400;
+  margin-top: 3px; line-height: 1.45;
+}
+.choice .zh { color: var(--gray); }
+body.exam-mode .question-box .zh { color: #6b7280; font-family: -apple-system, "Malgun Gothic", sans-serif; }
+.feedback .zh { color: #4b5563; }
+
 @media (min-width: 560px) {
   :root { font-size: 18px; }
 }
