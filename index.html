@@ -33,6 +33,8 @@
     <section id="view-home" class="view">
       <div class="sync-status" id="syncStatus">문제를 불러오는 중…</div>
 
+      <button id="resumeBanner" class="resume-banner hidden"></button>
+
       <div class="card-grid">
         <button class="menu-card menu-card--primary" data-go="mock">
           <span class="menu-card__icon">📝</span>
@@ -91,6 +93,7 @@
             <li data-i18n-html="exam.n5">실제 시험의 구술은 별도 10분 세션입니다. 사회통합프로그램 5단계 수료 + 합격 시 <b>귀화 면접심사 면제</b>가 가능합니다.</li>
           </ol>
         </div>
+        <button class="btn resume-cover-btn hidden" id="examResumeBtn"></button>
         <div class="quiz-actions">
           <button class="btn btn--ghost" data-go="home" data-i18n="common.cancel">취소</button>
           <button class="btn btn--primary" id="examStartBtn" data-i18n="exam.start">시험 시작</button>

@@ -11,6 +11,7 @@
 const K = {
   bank: 'nq_bank', meta: 'nq_meta', wrong: 'nq_wrong',
   stats: 'nq_stats', history: 'nq_history', drafts: 'nq_drafts', lang: 'nq_lang',
+  mockSave: 'nq_mocksave',
 };
 
 /* ---------- 최소 내장 예비 문제 (네트워크/캐시 모두 없을 때만) ---------- */
@@ -62,6 +63,8 @@ const I18N = {
     'wrong.empty': '틀린 문제가 없습니다. 잘하고 있어요! 👏', 'writing.empty': '해당 유형의 문제가 없습니다.',
     'guide.show': '💡 도움말 보기', 'guide.hide': '💡 도움말 숨기기', 'writing.draftPh': '여기에 답을 작성해 보세요 (200자 이내)',
     'model.show': '📝 모범답안 보기', 'model.hide': '📝 모범답안 숨기기', 'review.model': '모범답안',
+    'resume.banner': '📌 진행 중인 모의고사 이어서 풀기 ({0}/{1})', 'exam.resume': '이어서 풀기 ({0}/{1})',
+    'confirm.discardMock': '진행 중인 모의고사 기록이 사라집니다. 새로 시작할까요?', 'toast.resumed': '이어서 풉니다.',
     'confirm.submit': '제출하고 채점할까요?', 'confirm.clearWrong': '오답노트를 모두 비울까요?', 'confirm.resetStats': '학습 통계와 기록을 모두 초기화할까요?',
     'toast.clearedWrong': '오답노트를 비웠습니다.', 'toast.resetStats': '초기화했습니다.', 'toast.noQ': '풀 수 있는 문제가 없습니다. 동기화를 먼저 해주세요.', 'toast.timeUp': '시간 종료! 자동 채점합니다.',
     'count.char': '{0}자',
@@ -102,6 +105,8 @@ const I18N = {
     'wrong.empty': '没有错题，做得很好！👏', 'writing.empty': '没有该类型的题目。',
     'guide.show': '💡 查看提示', 'guide.hide': '💡 隐藏提示', 'writing.draftPh': '请在此作答（200字以内）',
     'model.show': '📝 查看范文', 'model.hide': '📝 隐藏范文', 'review.model': '范文',
+    'resume.banner': '📌 继续上次的模拟考试 ({0}/{1})', 'exam.resume': '继续作答 ({0}/{1})',
+    'confirm.discardMock': '正在进行的模拟考试记录将被删除。要重新开始吗？', 'toast.resumed': '继续作答。',
     'confirm.submit': '要提交并评分吗？', 'confirm.clearWrong': '要清空错题本吗？', 'confirm.resetStats': '要重置所有学习统计和记录吗？',
     'toast.clearedWrong': '已清空错题本。', 'toast.resetStats': '已重置。', 'toast.noQ': '没有可作答的题目。请先同步。', 'toast.timeUp': '时间到！自动评分。',
     'count.char': '{0}字',
@@ -214,7 +219,11 @@ const VIEWS = ['home', 'practice', 'examintro', 'quiz', 'writing', 'result', 'wr
 function showView(name) {
   currentView = name;
   VIEWS.forEach((v) => $('view-' + v).classList.toggle('hidden', v !== name));
-  if (name !== 'quiz') document.body.classList.remove('exam-mode');
+  if (name !== 'quiz') {
+    document.body.classList.remove('exam-mode');
+    // 퀴즈를 벗어나면(예: 홈으로) 진행 상황 저장 후 타이머 정지(중복 방지)
+    if (quiz && quiz.timer) { saveMockProgress(); clearInterval(quiz.timer); quiz.timer = null; }
+  }
   window.scrollTo(0, 0);
 }
 
@@ -228,6 +237,12 @@ function renderHome() {
   $('bankInfo').textContent = t('bankInfo', META.version, mc, fmtDate(META.syncedAt));
   if (META.syncedAt) setSyncStatus(t('sync.ready', BANK.length, mc), false);
   else setSyncStatus(t('sync.never'), false);
+
+  // 진행 중인 모의고사 이어풀기 배너
+  const s = getMockSave();
+  const rb = $('resumeBanner');
+  if (s) { rb.textContent = t('resume.banner', s.i + 1, s.list.length); rb.classList.remove('hidden'); }
+  else rb.classList.add('hidden');
 }
 
 /* =====================================================================
@@ -254,9 +269,17 @@ function catItem(name, count, onClick) {
 /* =====================================================================
    퀴즈 엔진
    ===================================================================== */
-function startQuiz(questions, mode) {
+function startQuiz(questions, mode, resume) {
   if (!questions.length) { toast(t('toast.noQ')); return; }
-  quiz = { mode, list: questions, i: 0, answers: new Array(questions.length).fill(null), text: {}, graded: mode === 'practice' || mode === 'wrong', timer: null, timeLeft: 60 * 60 };
+  quiz = {
+    mode, list: questions,
+    i: resume ? resume.i : 0,
+    answers: resume ? resume.answers : new Array(questions.length).fill(null),
+    text: resume ? (resume.text || {}) : {},
+    graded: mode === 'practice' || mode === 'wrong',
+    timer: null,
+    timeLeft: resume ? resume.timeLeft : 60 * 60,
+  };
   showView('quiz');
   const isMock = mode === 'mock';
   document.body.classList.toggle('exam-mode', isMock);
@@ -267,14 +290,37 @@ function startQuiz(questions, mode) {
   renderQuestion();
 }
 
+/* ---------- 모의고사 중간 저장 / 이어풀기 ---------- */
+function getMockSave() { const s = ls(K.mockSave, null); return (s && Array.isArray(s.list) && s.list.length) ? s : null; }
+function clearMockSave() { try { localStorage.removeItem(K.mockSave); } catch {} }
+function saveMockProgress() {
+  if (!quiz || quiz.mode !== 'mock') return;
+  save(K.mockSave, { list: quiz.list, i: quiz.i, answers: quiz.answers, text: quiz.text, timeLeft: quiz.timeLeft, savedAt: new Date().toISOString() });
+}
+
 function showExamIntro() {
   if (!mcOnly().length) { toast(t('toast.noQ')); return; }
   $('examNo').value = 'KINAT-' + String(Math.floor(1000 + Math.random() * 9000));
+  const s = getMockSave();
+  const btn = $('examResumeBtn');
+  if (s) { btn.textContent = t('exam.resume', s.i + 1, s.list.length); btn.classList.remove('hidden'); }
+  else btn.classList.add('hidden');
   showView('examintro');
 }
 function startMockExam() {
+  if (getMockSave() && !confirm(t('confirm.discardMock'))) return;
+  clearMockSave();
+  // 실제 시험 구성: 객관식 36 + 작문 4 + 구술 5 (각각 무작위)
   const mc = shuffle(mcOnly()).slice(0, 36);
-  startQuiz(mc.concat(byType('writing')).concat(byType('oral')), 'mock');
+  const wr = shuffle(byType('writing')).slice(0, 4);
+  const or = shuffle(byType('oral')).slice(0, 5);
+  startQuiz(mc.concat(wr).concat(or), 'mock');
+}
+function resumeMock() {
+  const s = getMockSave();
+  if (!s) { showView('home'); renderHome(); return; }
+  startQuiz(s.list, 'mock', { i: s.i, answers: s.answers, text: s.text, timeLeft: s.timeLeft });
+  toast(t('toast.resumed'));
 }
 function onWriteInput() {
   const q = quiz.list[quiz.i];
@@ -282,11 +328,17 @@ function onWriteInput() {
   quiz.text[q.id] = val;
   $('writeCount').textContent = t('count.char', val.length);
   $('writeArea').querySelector('.write-area__meta').classList.toggle('over', val.length > 200);
+  if (quiz.mode === 'mock') saveMockProgress();
 }
 
 function startTimer() {
   updateTimerLabel();
-  quiz.timer = setInterval(() => { quiz.timeLeft--; updateTimerLabel(); if (quiz.timeLeft <= 0) { clearInterval(quiz.timer); toast(t('toast.timeUp')); gradeMock(); } }, 1000);
+  quiz.timer = setInterval(() => {
+    quiz.timeLeft--;
+    updateTimerLabel();
+    if (quiz.timeLeft % 15 === 0) saveMockProgress(); // 남은 시간 주기적 저장
+    if (quiz.timeLeft <= 0) { clearInterval(quiz.timer); toast(t('toast.timeUp')); gradeMock(); }
+  }, 1000);
 }
 function updateTimerLabel() { const m = Math.floor(quiz.timeLeft / 60), s = quiz.timeLeft % 60; $('quizTimer').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`; }
 
@@ -361,6 +413,8 @@ function renderQuestion() {
     $('nextBtn').style.opacity = chosen === null ? '.5' : '1';
     $('submitBtn').classList.add('hidden');
   }
+
+  if (quiz.mode === 'mock') saveMockProgress(); // 답 선택·이동 시마다 중간 저장
 }
 
 function onChoose(idx) {
@@ -383,7 +437,8 @@ function finishPractice() {
   renderResult(quiz.list, quiz.answers, correct, { isMock: false, totalMc: quiz.list.length });
 }
 function gradeMock() {
-  if (quiz.timer) clearInterval(quiz.timer);
+  if (quiz.timer) { clearInterval(quiz.timer); quiz.timer = null; }
+  clearMockSave(); // 채점 완료 → 중간 저장 삭제
   const totalMc = quiz.list.filter((q) => q.type === 'mc').length;
   let correct = 0;
   quiz.list.forEach((q, i) => {
@@ -563,6 +618,8 @@ function wireEvents() {
   $('prevBtn').addEventListener('click', prevQuestion);
   $('submitBtn').addEventListener('click', () => { if (confirm(t('confirm.submit'))) gradeMock(); });
   $('examStartBtn').addEventListener('click', startMockExam);
+  $('resumeBanner').addEventListener('click', resumeMock);
+  $('examResumeBtn').addEventListener('click', resumeMock);
   $('writeInput').addEventListener('input', onWriteInput);
 
   $('writingSeg').querySelectorAll('.seg__btn').forEach((b) => { b.addEventListener('click', () => { writingType = b.dataset.wt; syncSeg(); renderWriting(); }); });

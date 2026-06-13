@@ -73,6 +73,17 @@ html, body {
 }
 .sync-status.is-error { background: var(--red-soft); color: var(--red); }
 
+/* ===== 이어서 풀기(중간 저장) ===== */
+.resume-banner {
+  display: block; width: 100%; text-align: left;
+  background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; border-left: 4px solid #f59e0b;
+  border-radius: 12px; padding: 14px 16px; margin-bottom: 14px;
+  font-weight: 700; font-size: .95rem; cursor: pointer;
+}
+.resume-banner:active { transform: scale(.99); }
+.resume-cover-btn { width: 100%; margin-bottom: 10px; background: #f59e0b; color: #fff; }
+.resume-cover-btn:hover { filter: brightness(1.05); }
+
 /* ===== 홈 메뉴 카드 ===== */
 .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .menu-card {
