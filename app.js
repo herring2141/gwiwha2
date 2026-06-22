@@ -25,11 +25,19 @@ const FALLBACK = {
 
 /* ---------- 다국어 사전 ---------- */
 let LANG = 'ko';
-const CAT_ZH = {
-  '한국어': '韩国语', '사회': '社会', '문화': '文化', '정치': '政治', '경제': '经济', '법': '法律', '역사': '历史', '지리': '地理', '작문': '写作', '구술': '口试',
-  /* 사전평가 전용 영역 */
-  '어휘': '词汇', '문법': '语法', '읽기·이해': '阅读理解', '대화': '对话', '한국문화': '韩国文化', '한국사회': '韩国社会',
+/* 언어별 카테고리명(ko=원문, 나머지는 주석 언어). vi/th는 빌드 외부 데이터로 주입 */
+const CAT_TR = {
+  zh: {
+    '한국어': '韩国语', '사회': '社会', '문화': '文化', '정치': '政治', '경제': '经济', '법': '法律', '역사': '历史', '지리': '地理', '작문': '写作', '구술': '口试',
+    '어휘': '词汇', '문법': '语法', '읽기·이해': '阅读理解', '대화': '对话', '한국문화': '韩国文化', '한국사회': '韩国社会',
+  },
+  vi: {}, th: {},
 };
+/* EXAMS·PRE_LEVELS의 {ko,zh} 객체에 vi/th가 없을 때 쓰는 한국어→번역 보조사전 */
+const T2 = { vi: {}, th: {} };
+/* 상단바 언어 버튼에 표시할 현재 언어 표식, 글자수 단위 */
+const LANG_LABEL = { ko: '🇰🇷', zh: '🇨🇳', vi: '🇻🇳', th: '🇹🇭' };
+const CHAR_UNIT = { ko: '자', zh: '字', vi: ' ký tự', th: ' ตัวอักษร' };
 const I18N = {
   ko: {
     'app.title': '귀화시험 연습', 'app.sync': '동기화',
@@ -126,16 +134,28 @@ const I18N = {
     'count.char': '{0}字',
   },
 };
+/* === vi/th UI 번역 주입(빌드 외부 데이터) === */
+I18N.vi = {"app.title": "Luyện thi nhập tịch", "app.sync": "Đồng bộ", "home.mock.t": "Thi thử", "home.mock.s": "Làm bài như thi thật", "home.practice.t": "Luyện theo lĩnh vực", "home.practice.s": "Luyện theo 8 lĩnh vực", "home.writing.t": "Luyện viết · vấn đáp", "home.writing.s": "Nói · viết theo chủ đề", "home.wrong.t": "Sổ câu sai", "home.stats.t": "Thống kê học tập", "home.stats.s": "Xem tỷ lệ đúng · lịch sử", "practice.title": "Luyện theo lĩnh vực", "practice.desc": "Làm từng câu rồi xem ngay đáp án · lời giải.", "practice.all": "🎲 Ngẫu nhiên toàn bộ", "exam.org": "Chương trình Hội nhập xã hội (KIIP)", "exam.title": "Đánh giá tổng hợp dùng cho nhập tịch", "exam.subtitle": "Thi thử phần thi viết", "exam.name": "Họ tên", "exam.namePh": "Nhập họ tên", "exam.no": "Số báo danh", "exam.noticeTitle": "Lưu ý", "exam.n1": "Đánh giá tổng hợp dùng cho nhập tịch gồm <b>trắc nghiệm 36 câu (65 điểm) + tự luận viết (10 điểm) + vấn đáp (25 điểm) = 100 điểm</b>, <b>đạt 60 điểm trở lên là đậu</b>.", "exam.n2": "Bài thi thử này làm <b>phần viết (trắc nghiệm + tự luận) trong 60 phút</b>, sau đó luyện tiếp <b>phần vấn đáp</b>.", "exam.n3": "Trắc nghiệm chọn một trong ①②③④, phần tự luận viết <b>trong 200 chữ</b>.", "exam.n4": "Chỉ trắc nghiệm được chấm tự động; phần viết · vấn đáp tự kiểm tra bằng đáp án mẫu · gợi ý.", "exam.n5": "Phần vấn đáp ở kỳ thi thật là một phiên riêng 10 phút. Khi hoàn thành giai đoạn 5 của Chương trình Hội nhập xã hội + thi đậu thì <b>có thể được miễn phỏng vấn nhập tịch</b>.", "common.cancel": "Hủy", "common.home": "Về trang chủ", "exam.start": "Bắt đầu thi", "quiz.prev": "← Câu trước", "quiz.next": "Câu sau →", "quiz.result": "Xem kết quả", "quiz.submit": "Nộp bài và chấm điểm", "writing.title": "Luyện viết · vấn đáp", "seg.writing": "✍️ Viết", "seg.oral": "🗣️ Vấn đáp", "result.title": "Kết quả chấm điểm", "result.unit": " điểm", "result.reviewHead": "Xem lại câu hỏi", "result.retryWrong": "Làm lại chỉ những câu sai", "wrong.title": "Sổ câu sai", "wrong.desc": "Những câu đã làm sai sẽ được gom lại đây. Làm đúng thì câu đó biến khỏi danh sách.", "wrong.start": "Làm câu sai", "wrong.clear": "Xóa sổ câu sai", "stats.title": "Thống kê học tập", "stats.recentHead": "Lịch sử thi thử gần đây", "stats.reset": "Đặt lại thống kê", "writeCount.suffix": " / 200 chữ", "sync.ready": "Đã sẵn sàng · tổng {0} câu (trắc nghiệm {1})", "sync.never": "Nhấn Đồng bộ để tải về câu hỏi mới nhất.", "sync.offline": "Ngoại tuyến — tiếp tục với {0} câu đã đồng bộ lần cuối", "sync.first": "Bạn chưa tải về câu hỏi nào. Hãy kết nối Internet rồi nhấn Đồng bộ.", "sync.synced": "Đã đồng bộ về câu hỏi mới nhất · tổng {0} câu", "toast.syncing": "Đang tải câu hỏi mới nhất…", "toast.syncDone": "Đồng bộ xong! Tổng {0} câu", "toast.offline": "Hãy kiểm tra kết nối Internet. Bạn có thể tiếp tục với câu hỏi đã lưu.", "toast.syncFail": "Không tải được câu hỏi.", "bankInfo": "Phiên bản bộ câu hỏi: {0} · trắc nghiệm {1} câu · đồng bộ lần cuối: {2}", "noSync": "Không có", "wrongCount": "{0} câu sai", "cat.count": "{0} câu", "banner.mc": "【Trắc nghiệm】  {0} / {1}", "banner.writing": "【Tự luận viết】  {0} / {1}  ·  trong 200 chữ", "banner.oral": "【Vấn đáp】  {0} / {1}  ·  nói thành tiếng", "fb.correct": "Chính xác! ✅", "fb.wrong": "Sai rồi ❌  Đáp án: {0}", "write.phWrite": "Viết câu trả lời của bạn ở đây (trong 200 chữ)", "write.phOral": "Hãy trả lời thành tiếng. (Bạn có thể ghi chú ý chính — tùy chọn)", "result.frac": "Đúng {1}/{0} câu trắc nghiệm", "result.fracMore": " · Phần viết · vấn đáp hãy tự kiểm tra ở bên dưới", "result.pass": "Đã vượt mốc đậu (60 điểm) 🎉", "result.fail": "Cố thêm chút nữa để đạt mốc đậu (60 điểm)!", "result.practice": "Đây là kết quả ở chế độ luyện tập.", "result.estLevel": "Giai đoạn xếp lớp dự kiến: {0}", "result.levelDisclaimer": "※ Điểm này không phải điểm xếp lớp thực tế mà là <b>ước tính dựa trên năng lực trắc nghiệm</b>. Đánh giá đầu vào thực tế gồm trắc nghiệm (75 điểm) + viết (2 câu) + vấn đáp (25 điểm) = 100 điểm, phần viết · vấn đáp do người chấm. Ngoài ra, <b>nếu vấn đáp dưới 3 điểm thì xếp giai đoạn 0</b>. Giai đoạn chính xác được quyết định theo điểm trong ngày thi.", "track.nat": "🇰🇷 Đánh giá tổng hợp nhập tịch", "track.perm": "🏡 Đánh giá tổng hợp định cư", "track.pre": "📊 Đánh giá đầu vào Hội nhập xã hội", "review.unanswered": "Chưa chọn", "review.emptyWrite": "Không có câu trả lời nào được viết.", "review.emptyOral": "Không có nội dung ghi chú nào.", "stats.total": "Tổng số câu đã làm", "stats.acc": "Tỷ lệ đúng tổng thể", "stats.noHistory": "Chưa có lịch sử thi thử nào.", "wrong.empty": "Không có câu sai nào. Bạn đang làm rất tốt! 👏", "writing.empty": "Không có câu hỏi thuộc loại này.", "guide.show": "💡 Xem gợi ý", "guide.hide": "💡 Ẩn gợi ý", "writing.draftPh": "Thử viết câu trả lời ở đây (trong 200 chữ)", "model.show": "📝 Xem đáp án mẫu", "model.hide": "📝 Ẩn đáp án mẫu", "review.model": "Đáp án mẫu", "resume.banner": "📌 Tiếp tục bài thi thử đang dở ({0}/{1})", "exam.resume": "Làm tiếp ({0}/{1})", "confirm.discardMock": "Bản ghi bài thi thử đang dở sẽ bị mất. Bắt đầu lại từ đầu chứ?", "toast.resumed": "Làm tiếp.", "resume.practice": "📌 Làm tiếp — {0} ({1}/{2})", "practice.allLabel": "Toàn bộ", "confirm.submit": "Nộp bài và chấm điểm chứ?", "confirm.clearWrong": "Xóa toàn bộ sổ câu sai chứ?", "confirm.resetStats": "Đặt lại toàn bộ thống kê và lịch sử học tập chứ?", "toast.clearedWrong": "Đã xóa sổ câu sai.", "toast.resetStats": "Đã đặt lại.", "toast.noQ": "Không có câu hỏi nào để làm. Hãy đồng bộ trước.", "toast.timeUp": "Hết giờ! Tự động chấm điểm.", "count.char": "{0} chữ"};
+I18N.th = {"app.title": "ฝึกสอบแปลงสัญชาติ", "app.sync": "ซิงค์", "home.mock.t": "ทำข้อสอบจำลอง", "home.mock.s": "ทำเหมือนสอบจริง", "home.practice.t": "ฝึกแยกตามหมวด", "home.practice.s": "ฝึกตาม 8 หมวด", "home.writing.t": "ฝึกเขียน·พูด", "home.writing.s": "พูด·เขียนตามหัวข้อ", "home.wrong.t": "สมุดข้อผิด", "home.stats.t": "สถิติการเรียน", "home.stats.s": "ดูอัตราถูก·ประวัติ", "practice.title": "ฝึกแยกตามหมวด", "practice.desc": "ทำทีละข้อแล้วดูเฉลย·คำอธิบายได้ทันที", "practice.all": "🎲 สุ่มทั้งหมด", "exam.org": "โครงการบูรณาการสังคม (KIIP)", "exam.title": "การประเมินรวมเพื่อแปลงสัญชาติ", "exam.subtitle": "ข้อสอบจำลองภาคข้อเขียน", "exam.name": "ชื่อ", "exam.namePh": "กรอกชื่อ", "exam.no": "เลขที่นั่งสอบ", "exam.noticeTitle": "ข้อควรทราบ", "exam.n1": "การประเมินรวมเพื่อแปลงสัญชาติคือ <b>ปรนัย 36 ข้อ (65 คะแนน) + เขียน (10 คะแนน) + พูด (25 คะแนน) = 100 คะแนน</b>, <b>ได้ 60 คะแนนขึ้นไปถือว่าผ่าน</b>", "exam.n2": "ข้อสอบจำลองนี้ให้ทำ <b>ภาคข้อเขียน (ปรนัย+เขียน) ภายใน 60 นาที</b> แล้วฝึก <b>ข้อสอบพูด</b> ต่อ", "exam.n3": "ปรนัยให้เลือกหนึ่งข้อจาก ①②③④ ส่วนการเขียนให้เขียน <b>ไม่เกิน 200 ตัวอักษร</b>", "exam.n4": "ตรวจคะแนนอัตโนมัติเฉพาะปรนัย ส่วนเขียน·พูดให้ตรวจสอบด้วยตนเองจากคำตอบตัวอย่าง·คำแนะนำ", "exam.n5": "การพูดในสอบจริงเป็นช่วงแยกต่างหาก 10 นาที เมื่อจบโครงการบูรณาการสังคมระดับ 5 + สอบผ่าน จะ <b>ได้รับการยกเว้นการสัมภาษณ์แปลงสัญชาติ</b>", "common.cancel": "ยกเลิก", "common.home": "กลับหน้าหลัก", "exam.start": "เริ่มสอบ", "quiz.prev": "← ก่อนหน้า", "quiz.next": "ถัดไป →", "quiz.result": "ดูผล", "quiz.submit": "ส่งและตรวจคะแนน", "writing.title": "ฝึกเขียน·พูด", "seg.writing": "✍️ เขียน", "seg.oral": "🗣️ พูด", "result.title": "ผลการตรวจคะแนน", "result.unit": "คะแนน", "result.reviewHead": "ดูข้อสอบอีกครั้ง", "result.retryWrong": "ทำเฉพาะข้อที่ผิดอีกครั้ง", "wrong.title": "สมุดข้อผิด", "wrong.desc": "ข้อที่ตอบผิดจะถูกรวบรวมไว้ที่นี่ เมื่อตอบถูกจะหายไปจากรายการ", "wrong.start": "ทำข้อที่ผิด", "wrong.clear": "ล้างสมุดข้อผิด", "stats.title": "สถิติการเรียน", "stats.recentHead": "ประวัติข้อสอบจำลองล่าสุด", "stats.reset": "รีเซ็ตสถิติ", "writeCount.suffix": " / 200 ตัวอักษร", "sync.ready": "พร้อมแล้ว · ทั้งหมด {0} ข้อ (ปรนัย {1})", "sync.never": "กดซิงค์เพื่อรับข้อสอบล่าสุด", "sync.offline": "ออฟไลน์ — ดำเนินการด้วย {0} ข้อจากการซิงค์ครั้งล่าสุด", "sync.first": "ยังไม่ได้รับข้อสอบ กรุณาเชื่อมต่ออินเทอร์เน็ตแล้วกดซิงค์", "sync.synced": "ซิงค์เป็นข้อสอบล่าสุดแล้ว · ทั้งหมด {0} ข้อ", "toast.syncing": "กำลังรับข้อสอบล่าสุด…", "toast.syncDone": "ซิงค์เสร็จแล้ว! ทั้งหมด {0} ข้อ", "toast.offline": "กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต คุณสามารถทำต่อด้วยข้อสอบที่บันทึกไว้ได้", "toast.syncFail": "ไม่สามารถรับข้อสอบได้", "bankInfo": "เวอร์ชันคลังข้อสอบ: {0} · ปรนัย {1} ข้อ · ซิงค์ล่าสุด: {2}", "noSync": "ไม่มี", "wrongCount": "ข้อที่ผิด {0} ข้อ", "cat.count": "{0} ข้อ", "banner.mc": "【ปรนัย】  {0} / {1}", "banner.writing": "【เขียน】  {0} / {1}  ·  ไม่เกิน 200 ตัวอักษร", "banner.oral": "【พูด】  {0} / {1}  ·  พูดออกเสียง", "fb.correct": "ตอบถูก! ✅", "fb.wrong": "ตอบผิด ❌  คำตอบที่ถูก: {0}", "write.phWrite": "เขียนคำตอบของคุณที่นี่ (ไม่เกิน 200 ตัวอักษร)", "write.phOral": "ลองพูดตอบออกเสียงดู (จะจดประเด็นสำคัญไว้ก็ได้ — ไม่บังคับ)", "result.frac": "ตอบถูก {1} ข้อ จากปรนัย {0} ข้อ", "result.fracMore": " · เขียน·พูดให้ตรวจสอบเองด้านล่าง", "result.pass": "ผ่านเกณฑ์ (60 คะแนน) 🎉", "result.fail": "อีกนิดเดียวก็ถึงเกณฑ์ (60 คะแนน)!", "result.practice": "นี่คือผลในโหมดฝึก", "result.estLevel": "ระดับที่คาดว่าจะได้รับการจัด: {0}", "result.levelDisclaimer": "※ คะแนนนี้ไม่ใช่คะแนนจัดระดับจริง แต่เป็น <b>ค่าประมาณตามความสามารถปรนัย</b> การประเมินเบื้องต้นจริงคือ ปรนัย (75 คะแนน)+เขียน (2 ข้อ)+พูด (25 คะแนน)=100 คะแนน โดยเขียน·พูดตรวจโดยคน นอกจากนี้ <b>หากพูดได้ต่ำกว่า 3 คะแนนจะถูกจัดเป็นระดับ 0</b> ระดับที่แน่นอนจะกำหนดจากคะแนนในวันสอบ", "track.nat": "🇰🇷 การประเมินรวมแปลงสัญชาติ", "track.perm": "🏡 การประเมินรวมถิ่นที่อยู่ถาวร", "track.pre": "📊 การประเมินเบื้องต้นบูรณาการสังคม", "review.unanswered": "ไม่ได้เลือก", "review.emptyWrite": "ไม่มีคำตอบที่เขียนไว้", "review.emptyOral": "ไม่มีเนื้อหาที่จดไว้", "stats.total": "ข้อที่ทำทั้งหมด", "stats.acc": "อัตราถูกรวม", "stats.noHistory": "ยังไม่มีประวัติข้อสอบจำลอง", "wrong.empty": "ไม่มีข้อที่ผิด ทำได้ดีมาก! 👏", "writing.empty": "ไม่มีข้อสอบประเภทนี้", "guide.show": "💡 ดูคำแนะนำ", "guide.hide": "💡 ซ่อนคำแนะนำ", "writing.draftPh": "ลองเขียนคำตอบที่นี่ (ไม่เกิน 200 ตัวอักษร)", "model.show": "📝 ดูคำตอบตัวอย่าง", "model.hide": "📝 ซ่อนคำตอบตัวอย่าง", "review.model": "คำตอบตัวอย่าง", "resume.banner": "📌 ทำข้อสอบจำลองที่ค้างไว้ต่อ ({0}/{1})", "exam.resume": "ทำต่อ ({0}/{1})", "confirm.discardMock": "ประวัติข้อสอบจำลองที่ทำค้างไว้จะหายไป จะเริ่มใหม่หรือไม่?", "toast.resumed": "ทำต่อจากเดิม", "resume.practice": "📌 ทำต่อ — {0} ({1}/{2})", "practice.allLabel": "ทั้งหมด", "confirm.submit": "จะส่งและตรวจคะแนนหรือไม่?", "confirm.clearWrong": "จะล้างสมุดข้อผิดทั้งหมดหรือไม่?", "confirm.resetStats": "จะรีเซ็ตสถิติและประวัติการเรียนทั้งหมดหรือไม่?", "toast.clearedWrong": "ล้างสมุดข้อผิดแล้ว", "toast.resetStats": "รีเซ็ตแล้ว", "toast.noQ": "ไม่มีข้อสอบให้ทำ กรุณาซิงค์ก่อน", "toast.timeUp": "หมดเวลา! ตรวจคะแนนอัตโนมัติ", "count.char": "{0} ตัวอักษร"};
+CAT_TR.vi = {"한국어": "Tiếng Hàn", "사회": "Xã hội", "문화": "Văn hóa", "정치": "Chính trị", "경제": "Kinh tế", "법": "Pháp luật", "역사": "Lịch sử", "지리": "Địa lý", "작문": "Viết văn", "구술": "Vấn đáp", "어휘": "Từ vựng", "문법": "Ngữ pháp", "읽기·이해": "Đọc · hiểu", "대화": "Hội thoại", "한국문화": "Văn hóa Hàn Quốc", "한국사회": "Xã hội Hàn Quốc"};
+CAT_TR.th = {"한국어": "ภาษาเกาหลี", "사회": "สังคม", "문화": "วัฒนธรรม", "정치": "การเมือง", "경제": "เศรษฐกิจ", "법": "กฎหมาย", "역사": "ประวัติศาสตร์", "지리": "ภูมิศาสตร์", "작문": "การเขียน", "구술": "การพูด", "어휘": "คำศัพท์", "문법": "ไวยากรณ์", "읽기·이해": "การอ่าน·ความเข้าใจ", "대화": "บทสนทนา", "한국문화": "วัฒนธรรมเกาหลี", "한국사회": "สังคมเกาหลี"};
+T2.vi = {"귀화 종합평가": "Đánh giá tổng hợp nhập tịch", "사회통합프로그램 (KIIP)": "Chương trình Hội nhập xã hội (KIIP)", "귀화용 종합평가": "Đánh giá tổng hợp dùng cho nhập tịch", "필기시험 모의고사": "Thi thử phần thi viết", "실제 시험처럼 풀기 (객관식+작문+구술)": "Làm bài như thi thật (trắc nghiệm + viết + vấn đáp)", "8개 영역별로 풀기": "Luyện theo 8 lĩnh vực", "귀화용 종합평가는 <b>객관식 36문항(65점) + 작문형(10점) + 구술(25점) = 100점</b>, <b>60점 이상이면 합격</b>입니다.": "Đánh giá tổng hợp dùng cho nhập tịch gồm <b>trắc nghiệm 36 câu (65 điểm) + tự luận viết (10 điểm) + vấn đáp (25 điểm) = 100 điểm</b>, <b>đạt 60 điểm trở lên là đậu</b>.", "이 모의고사는 <b>필기(객관식+작문)를 60분 안에</b> 풀고, 이어서 <b>구술 문항</b>까지 연습합니다.": "Bài thi thử này làm <b>phần viết (trắc nghiệm + tự luận) trong 60 phút</b>, sau đó luyện tiếp <b>phần vấn đáp</b>.", "객관식은 ①②③④ 중 하나를 고르고, 작문은 <b>200자 이내</b>로 작성합니다.": "Trắc nghiệm chọn một trong ①②③④, phần tự luận viết <b>trong 200 chữ</b>.", "객관식만 자동 채점되며, 작문·구술은 모범답안·도움말로 스스로 점검합니다.": "Chỉ trắc nghiệm được chấm tự động; phần viết · vấn đáp tự kiểm tra bằng đáp án mẫu · gợi ý.", "실제 시험의 구술은 별도 10분 세션입니다. 사회통합프로그램 5단계 수료 + 합격 시 <b>귀화 면접심사 면제</b>가 가능합니다.": "Phần vấn đáp ở kỳ thi thật là một phiên riêng 10 phút. Khi hoàn thành giai đoạn 5 của Chương trình Hội nhập xã hội + thi đậu thì <b>có thể được miễn phỏng vấn nhập tịch</b>.", "영주 종합평가": "Đánh giá tổng hợp định cư", "영주용 종합평가": "Đánh giá tổng hợp dùng cho định cư", "영주용 종합평가는 <b>객관식 36문항(65점) + 작문형(10점) + 구술(25점) = 100점</b>, <b>60점 이상이면 합격</b>입니다.": "Đánh giá tổng hợp dùng cho định cư gồm <b>trắc nghiệm 36 câu (65 điểm) + tự luận viết (10 điểm) + vấn đáp (25 điểm) = 100 điểm</b>, <b>đạt 60 điểm trở lên là đậu</b>.", "응시 자격: 사회통합프로그램 <b>5단계 기본과정 수료</b>(또는 사전평가로 5단계 배정). 영주용은 <b>지필(PBT)로만</b> 시행됩니다.": "Điều kiện dự thi: <b>hoàn thành khóa cơ bản giai đoạn 5</b> của Chương trình Hội nhập xã hội (hoặc được xếp giai đoạn 5 qua đánh giá đầu vào). Bài thi định cư <b>chỉ thi trên giấy (PBT)</b>.", "사회통합 사전평가": "Đánh giá đầu vào Hội nhập xã hội", "사회통합프로그램 사전평가": "Đánh giá đầu vào Chương trình Hội nhập xã hội", "단계 배정 모의평가": "Đánh giá thử để xếp giai đoạn", "어휘·문법·읽기·대화·문화·사회": "Từ vựng · ngữ pháp · đọc · hội thoại · văn hóa · xã hội", "사회통합프로그램 <b>사전평가</b>는 합격·불합격 시험이 아니라, 점수에 따라 <b>0~5단계</b>를 배정하는 레벨 평가입니다.": "<b>Đánh giá đầu vào</b> của Chương trình Hội nhập xã hội không phải kỳ thi đậu · rớt, mà là bài đánh giá phân cấp để xếp <b>giai đoạn 0~5</b> theo điểm số.", "실제 시험은 <b>필기 50문항(60분, 75점)</b> + <b>구술 5문항(10분, 25점)</b> = 100점입니다. 이 모의평가는 필기(객관식+작문)를 풀고 이어서 구술을 연습합니다.": "Kỳ thi thật gồm <b>phần viết 50 câu (60 phút, 75 điểm)</b> + <b>vấn đáp 5 câu (10 phút, 25 điểm)</b> = 100 điểm. Bài đánh giá thử này làm phần viết (trắc nghiệm + tự luận) rồi luyện tiếp phần vấn đáp.", "객관식은 ①②③④ 중 하나를 고르고, 작문은 빈칸에 알맞은 표현을 짧게 씁니다.": "Trắc nghiệm chọn một trong ①②③④, phần viết điền ngắn gọn cách diễn đạt thích hợp vào chỗ trống.", "객관식만 자동 채점되어 <b>예상 배정 단계</b>를 알려줍니다. 작문·구술은 모범답안으로 스스로 점검합니다.": "Chỉ trắc nghiệm được chấm tự động và cho biết <b>giai đoạn xếp lớp dự kiến</b>. Phần viết · vấn đáp tự kiểm tra bằng đáp án mẫu.", "실제로는 <b>구술 점수가 3점 미만이면 0단계</b>로 배정됩니다. 정확한 단계는 시험 당일 점수로 정해지며, 표시되는 단계는 <b>연습용 참고치</b>입니다.": "Trên thực tế, <b>nếu điểm vấn đáp dưới 3 điểm thì xếp giai đoạn 0</b>. Giai đoạn chính xác được quyết định theo điểm trong ngày thi, giai đoạn hiển thị chỉ là <b>giá trị tham khảo khi luyện tập</b>.", "5단계 · 한국사회이해": "Giai đoạn 5 · Hiểu biết xã hội Hàn Quốc", "81~100점": "81~100 điểm", "4단계 · 중급2": "Giai đoạn 4 · Trung cấp 2", "61~80점": "61~80 điểm", "3단계 · 중급1": "Giai đoạn 3 · Trung cấp 1", "41~60점": "41~60 điểm", "2단계 · 초급2": "Giai đoạn 2 · Sơ cấp 2", "21~40점": "21~40 điểm", "1단계 · 초급1": "Giai đoạn 1 · Sơ cấp 1", "3~20점": "3~20 điểm", "0단계 · 한국어기초": "Giai đoạn 0 · Tiếng Hàn cơ bản", "구술 3점 미만": "Vấn đáp dưới 3 điểm"};
+T2.th = {"귀화 종합평가": "การประเมินรวมแปลงสัญชาติ", "사회통합프로그램 (KIIP)": "โครงการบูรณาการสังคม (KIIP)", "귀화용 종합평가": "การประเมินรวมเพื่อแปลงสัญชาติ", "필기시험 모의고사": "ข้อสอบจำลองภาคข้อเขียน", "실제 시험처럼 풀기 (객관식+작문+구술)": "ทำเหมือนสอบจริง (ปรนัย+เขียน+พูด)", "8개 영역별로 풀기": "ฝึกตาม 8 หมวด", "귀화용 종합평가는 <b>객관식 36문항(65점) + 작문형(10점) + 구술(25점) = 100점</b>, <b>60점 이상이면 합격</b>입니다.": "การประเมินรวมเพื่อแปลงสัญชาติคือ <b>ปรนัย 36 ข้อ (65 คะแนน) + เขียน (10 คะแนน) + พูด (25 คะแนน) = 100 คะแนน</b>, <b>ได้ 60 คะแนนขึ้นไปถือว่าผ่าน</b>", "이 모의고사는 <b>필기(객관식+작문)를 60분 안에</b> 풀고, 이어서 <b>구술 문항</b>까지 연습합니다.": "ข้อสอบจำลองนี้ให้ทำ <b>ภาคข้อเขียน (ปรนัย+เขียน) ภายใน 60 นาที</b> แล้วฝึก <b>ข้อสอบพูด</b> ต่อ", "객관식은 ①②③④ 중 하나를 고르고, 작문은 <b>200자 이내</b>로 작성합니다.": "ปรนัยให้เลือกหนึ่งข้อจาก ①②③④ ส่วนการเขียนให้เขียน <b>ไม่เกิน 200 ตัวอักษร</b>", "객관식만 자동 채점되며, 작문·구술은 모범답안·도움말로 스스로 점검합니다.": "ตรวจคะแนนอัตโนมัติเฉพาะปรนัย ส่วนเขียน·พูดให้ตรวจสอบด้วยตนเองจากคำตอบตัวอย่าง·คำแนะนำ", "실제 시험의 구술은 별도 10분 세션입니다. 사회통합프로그램 5단계 수료 + 합격 시 <b>귀화 면접심사 면제</b>가 가능합니다.": "การพูดในสอบจริงเป็นช่วงแยกต่างหาก 10 นาที เมื่อจบโครงการบูรณาการสังคมระดับ 5 + สอบผ่าน จะ <b>ได้รับการยกเว้นการสัมภาษณ์แปลงสัญชาติ</b>", "영주 종합평가": "การประเมินรวมถิ่นที่อยู่ถาวร", "영주용 종합평가": "การประเมินรวมเพื่อถิ่นที่อยู่ถาวร", "영주용 종합평가는 <b>객관식 36문항(65점) + 작문형(10점) + 구술(25점) = 100점</b>, <b>60점 이상이면 합격</b>입니다.": "การประเมินรวมเพื่อถิ่นที่อยู่ถาวรคือ <b>ปรนัย 36 ข้อ (65 คะแนน) + เขียน (10 คะแนน) + พูด (25 คะแนน) = 100 คะแนน</b>, <b>ได้ 60 คะแนนขึ้นไปถือว่าผ่าน</b>", "응시 자격: 사회통합프로그램 <b>5단계 기본과정 수료</b>(또는 사전평가로 5단계 배정). 영주용은 <b>지필(PBT)로만</b> 시행됩니다.": "คุณสมบัติผู้สอบ: ต้องจบ <b>หลักสูตรพื้นฐานระดับ 5</b> ของโครงการบูรณาการสังคม (หรือได้รับการจัดเป็นระดับ 5 จากการประเมินเบื้องต้น) แบบถิ่นที่อยู่ถาวรจัดสอบ <b>ด้วยกระดาษ-ปากกา (PBT) เท่านั้น</b>", "사회통합 사전평가": "การประเมินเบื้องต้นบูรณาการสังคม", "사회통합프로그램 사전평가": "การประเมินเบื้องต้นโครงการบูรณาการสังคม", "단계 배정 모의평가": "การประเมินจำลองเพื่อจัดระดับ", "어휘·문법·읽기·대화·문화·사회": "คำศัพท์·ไวยากรณ์·การอ่าน·บทสนทนา·วัฒนธรรม·สังคม", "사회통합프로그램 <b>사전평가</b>는 합격·불합격 시험이 아니라, 점수에 따라 <b>0~5단계</b>를 배정하는 레벨 평가입니다.": "<b>การประเมินเบื้องต้น</b> ของโครงการบูรณาการสังคมไม่ใช่การสอบผ่าน·ไม่ผ่าน แต่เป็นการประเมินระดับที่จัด <b>ระดับ 0~5</b> ตามคะแนน", "실제 시험은 <b>필기 50문항(60분, 75점)</b> + <b>구술 5문항(10분, 25점)</b> = 100점입니다. 이 모의평가는 필기(객관식+작문)를 풀고 이어서 구술을 연습합니다.": "สอบจริงคือ <b>ข้อเขียน 50 ข้อ (60 นาที, 75 คะแนน)</b> + <b>พูด 5 ข้อ (10 นาที, 25 คะแนน)</b> = 100 คะแนน การประเมินจำลองนี้ให้ทำภาคข้อเขียน (ปรนัย+เขียน) แล้วฝึกพูดต่อ", "객관식은 ①②③④ 중 하나를 고르고, 작문은 빈칸에 알맞은 표현을 짧게 씁니다.": "ปรนัยให้เลือกหนึ่งข้อจาก ①②③④ ส่วนการเขียนให้เติมคำที่เหมาะสมลงในช่องว่างสั้นๆ", "객관식만 자동 채점되어 <b>예상 배정 단계</b>를 알려줍니다. 작문·구술은 모범답안으로 스스로 점검합니다.": "ตรวจคะแนนอัตโนมัติเฉพาะปรนัยแล้วบอก <b>ระดับที่คาดว่าจะได้รับการจัด</b> ส่วนเขียน·พูดให้ตรวจสอบด้วยตนเองจากคำตอบตัวอย่าง", "실제로는 <b>구술 점수가 3점 미만이면 0단계</b>로 배정됩니다. 정확한 단계는 시험 당일 점수로 정해지며, 표시되는 단계는 <b>연습용 참고치</b>입니다.": "ในความเป็นจริง <b>หากคะแนนพูดต่ำกว่า 3 คะแนนจะถูกจัดเป็นระดับ 0</b> ระดับที่แน่นอนกำหนดจากคะแนนในวันสอบ ส่วนระดับที่แสดงเป็น <b>ค่าอ้างอิงสำหรับฝึกซ้อม</b>", "5단계 · 한국사회이해": "ระดับ 5 · ความเข้าใจสังคมเกาหลี", "81~100점": "81~100 คะแนน", "4단계 · 중급2": "ระดับ 4 · กลาง 2", "61~80점": "61~80 คะแนน", "3단계 · 중급1": "ระดับ 3 · กลาง 1", "41~60점": "41~60 คะแนน", "2단계 · 초급2": "ระดับ 2 · ต้น 2", "21~40점": "21~40 คะแนน", "1단계 · 초급1": "ระดับ 1 · ต้น 1", "3~20점": "3~20 คะแนน", "0단계 · 한국어기초": "ระดับ 0 · ภาษาเกาหลีพื้นฐาน", "구술 3점 미만": "พูดต่ำกว่า 3 คะแนน"};
 function t(key) {
   let s = (I18N[LANG] && I18N[LANG][key]) || I18N.ko[key] || key;
   for (let i = 1; i < arguments.length; i++) s = s.replace('{' + (i - 1) + '}', arguments[i]);
   return s;
 }
-function catName(c) { return LANG === 'zh' && CAT_ZH[c] ? CAT_ZH[c] : c; }
-/* 한국어 본문 + (중국어 모드면) 중국어 보조를 함께 표시 */
-function bi(ko, zh) { return (LANG === 'zh' && zh) ? `${ko}<span class="zh">${zh}</span>` : (ko || ''); }
-/* 언어에 맞는 문자열 선택 ({ko, zh}) */
-function tx(o) { return (LANG === 'zh' && o && o.zh) ? o.zh : (o ? o.ko : ''); }
+function catName(c) { return (LANG !== 'ko' && CAT_TR[LANG] && CAT_TR[LANG][c]) || c; }
+/* 한국어 본문 + (주석 언어면) 모국어 주석을 함께 표시 */
+function bi(ko, g) { return (LANG !== 'ko' && g) ? `${ko}<span class="zh">${g}</span>` : (ko || ''); }
+/* 문제의 주석 필드(q_zh / q_vi / q_th …)를 현재 언어로 선택 */
+function gl(q, base) { return (LANG !== 'ko' && q && q[base + '_' + LANG]) || ''; }
+function glc(q, idx) { if (LANG === 'ko' || !q) return ''; const a = q['choices_' + LANG]; return (a && a[idx]) || ''; }
+/* {ko, zh(+vi/th)} 객체에서 언어 선택 — vi/th는 T2 보조사전 폴백 */
+function tx(o) { if (!o) return ''; if (o[LANG]) return o[LANG]; if (LANG !== 'ko' && T2[LANG] && T2[LANG][o.ko]) return T2[LANG][o.ko]; return o.ko || ''; }
+/* 한국어 UI 문자열 → 현재 언어(vi/th는 T2 보조사전, ko/zh는 원문 그대로) */
+function trUI(s) { return (LANG !== 'ko' && LANG !== 'zh' && T2[LANG] && T2[LANG][s]) ? T2[LANG][s] : s; }
 
 /* =====================================================================
    시험 트랙 (종합평가 / 사전평가)
@@ -277,7 +297,8 @@ function init() {
     // 새 버전 적용은 서비스워커(activate 시 창 자동 새로고침)가 담당
     navigator.serviceWorker.register('sw.js').then((reg) => { swReg = reg; }).catch(() => {});
   }
-  LANG = ls(K.lang, 'ko');
+  const savedLang = ls(K.lang, null);
+  LANG = savedLang || 'ko';
   activeExam = ls(K.exam, 'nat');
   loadBankFromStorageOrFallback();
   applyStaticI18n();
@@ -285,6 +306,7 @@ function init() {
   wireEvents();
   showView('home');
   renderHome();
+  if (savedLang === null) openLangPicker();   // 첫 실행: 국가/언어(주석) 선택
   sync({ silent: true });
 }
 
@@ -297,18 +319,22 @@ function loadBankFromStorageOrFallback() {
 
 /* ---------- 다국어 적용 ---------- */
 function applyStaticI18n() {
-  document.documentElement.lang = LANG === 'zh' ? 'zh' : 'ko';
+  document.documentElement.lang = LANG;
   document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-html]').forEach((el) => { el.innerHTML = t(el.dataset.i18nHtml); });
   document.querySelectorAll('[data-i18n-ph]').forEach((el) => { el.placeholder = t(el.dataset.i18nPh); });
-  $('langBtn').textContent = LANG === 'zh' ? '한국어' : '中文';
+  $('langBtn').textContent = LANG_LABEL[LANG] || '🌐';
 }
 function setLang(lang) {
+  if (!LANG_LABEL[lang]) return;
   LANG = lang; save(K.lang, lang);
   applyStaticI18n();
   applyExamUi();
   refreshView();
 }
+/* 국가/언어 선택 화면(splash) — 첫 실행 시, 또는 상단 언어 버튼으로 다시 열기 */
+function openLangPicker() { const el = $('langSplash'); if (el) el.classList.remove('hidden'); }
+function chooseLang(lang) { const el = $('langSplash'); if (el) el.classList.add('hidden'); setLang(lang); }
 
 /* ---------- 시험 트랙 UI 반영 / 전환 ---------- */
 function applyExamUi() {
@@ -483,7 +509,7 @@ function renderExamIntro() {
   if (title) title.textContent = tx(e.coverTitle);
   if (sub) sub.textContent = tx(e.coverSub);
   const ol = $('examNoticeList');
-  if (ol) ol.innerHTML = e.notices[LANG === 'zh' ? 'zh' : 'ko'].map((n) => `<li>${n}</li>`).join('');
+  if (ol) { const ns = (LANG === 'zh' && e.notices.zh) ? e.notices.zh : e.notices.ko.map(trUI); ol.innerHTML = ns.map((n) => `<li>${n}</li>`).join(''); }
 }
 function showExamIntro() {
   if (!mcOnly().length) { toast(t('toast.noQ')); return; }
@@ -561,7 +587,7 @@ function renderQuestion() {
     else $('examBanner').textContent = t('banner.oral', doneOf('oral'), countOf('oral'));
   }
 
-  $('questionBox').innerHTML = bi(q.q, q.q_zh);
+  $('questionBox').innerHTML = bi(q.q, gl(q, 'q'));
 
   const chosen = quiz.answers[quiz.i];
   const showAnswer = quiz.graded && !isWriting && chosen !== null;
@@ -585,7 +611,7 @@ function renderQuestion() {
     q.choices.forEach((c, idx) => {
       const b = document.createElement('button');
       b.className = 'choice';
-      const czh = q.choices_zh && q.choices_zh[idx];
+      const czh = glc(q, idx);
       b.innerHTML = `<span class="choice__num">${NUM[idx]}</span><span>${bi(c, czh)}</span>`;
       if (chosen === idx) b.classList.add('is-selected');
       if (showAnswer) { b.disabled = true; if (idx === q.answer) b.classList.add('is-correct'); else if (idx === chosen) b.classList.add('is-wrong'); }
@@ -597,7 +623,7 @@ function renderQuestion() {
       const ok = chosen === q.answer;
       const head = ok ? t('fb.correct') : t('fb.wrong', NUM[q.answer] + ' ' + q.choices[q.answer]);
       fb.className = 'feedback' + (ok ? '' : ' is-wrong');
-      fb.innerHTML = `<strong>${head}</strong>${bi(q.explanation || '', q.explanation_zh)}`;
+      fb.innerHTML = `<strong>${head}</strong>${bi(q.explanation || '', gl(q, 'explanation'))}`;
       fb.classList.remove('hidden');
     } else { fb.classList.add('hidden'); }
   }
@@ -721,22 +747,22 @@ function reviewItem(q, chosen, writeText) {
     const isOral = q.type === 'oral';
     const ans = (writeText || '').trim().replace(/</g, '&lt;');
     const empty = isOral ? t('review.emptyOral') : t('review.emptyWrite');
-    el.innerHTML = `<div class="review-item__q">${isOral ? '🗣️' : '✍️'} ${bi(q.q, q.q_zh)}</div>
+    el.innerHTML = `<div class="review-item__q">${isOral ? '🗣️' : '✍️'} ${bi(q.q, gl(q, 'q'))}</div>
       <div class="review-item__write ${ans ? '' : 'empty-ans'}">${ans || empty}</div>
-      ${q.guide ? `<div class="review-item__exp">💡 ${bi(q.guide, q.guide_zh)}</div>` : ''}
-      ${q.model ? `<div class="review-item__model"><b>${t('review.model')}</b><br>${bi(q.model, q.model_zh)}</div>` : ''}`;
+      ${q.guide ? `<div class="review-item__exp">💡 ${bi(q.guide, gl(q, 'guide'))}</div>` : ''}
+      ${q.model ? `<div class="review-item__model"><b>${t('review.model')}</b><br>${bi(q.model, gl(q, 'model'))}</div>` : ''}`;
     return el;
   }
   let opts = '';
   q.choices.forEach((c, idx) => {
     let cls = ''; if (idx === q.answer) cls = 'correct'; else if (idx === chosen) cls = 'chosen-wrong';
-    const czh = q.choices_zh && q.choices_zh[idx];
+    const czh = glc(q, idx);
     opts += `<div class="review-item__opt ${cls}">${NUM[idx]} ${bi(c, czh)}${idx === q.answer ? ' ✓' : ''}</div>`;
   });
   const unanswered = chosen === null || chosen === undefined;
-  el.innerHTML = `<div class="review-item__q">${bi(q.q, q.q_zh)}</div>${opts}
+  el.innerHTML = `<div class="review-item__q">${bi(q.q, gl(q, 'q'))}</div>${opts}
     ${unanswered ? `<div class="review-item__opt chosen-wrong">${t('review.unanswered')}</div>` : ''}
-    ${q.explanation ? `<div class="review-item__exp">💡 ${bi(q.explanation, q.explanation_zh)}</div>` : ''}`;
+    ${q.explanation ? `<div class="review-item__exp">💡 ${bi(q.explanation, gl(q, 'explanation'))}</div>` : ''}`;
   return el;
 }
 
@@ -767,13 +793,13 @@ function renderWriting() {
     card.className = 'writing-card';
     const isWriting = q.type === 'writing';
     card.innerHTML = `
-      <div class="writing-card__q">${bi(q.q, q.q_zh)}</div>
+      <div class="writing-card__q">${bi(q.q, gl(q, 'q'))}</div>
       ${isWriting ? `<textarea data-id="${q.id}" placeholder="${t('writing.draftPh')}">${drafts[q.id] || ''}</textarea>
-        <div class="writing-card__meta"><span class="writing-card__count">0${LANG === 'zh' ? '字' : '자'}</span></div>` : ''}
+        <div class="writing-card__meta"><span class="writing-card__count">0${CHAR_UNIT[LANG] || '자'}</span></div>` : ''}
       <button class="writing-card__guide-toggle">${t('guide.show')}</button>
-      <div class="writing-card__guide hidden">${bi(q.guide || '', q.guide_zh)}</div>
+      <div class="writing-card__guide hidden">${bi(q.guide || '', gl(q, 'guide'))}</div>
       ${q.model ? `<button class="writing-card__model-toggle">${t('model.show')}</button>
-      <div class="writing-card__model hidden">${bi(q.model, q.model_zh)}</div>` : ''}`;
+      <div class="writing-card__model hidden">${bi(q.model, gl(q, 'model'))}</div>` : ''}`;
     if (isWriting) {
       const ta = card.querySelector('textarea'); const cnt = card.querySelector('.writing-card__count');
       const upd = () => { const n = ta.value.length; cnt.textContent = t('count.char', n); cnt.classList.toggle('over', n > 200); };
@@ -822,7 +848,8 @@ function renderStats() {
 function wireEvents() {
   $('homeBtn').addEventListener('click', () => { showView('home'); renderHome(); });
   $('syncBtn').addEventListener('click', () => sync({ silent: false }));
-  $('langBtn').addEventListener('click', () => setLang(LANG === 'zh' ? 'ko' : 'zh'));
+  $('langBtn').addEventListener('click', openLangPicker);
+  document.querySelectorAll('#langSplash .lang-opt').forEach((b) => b.addEventListener('click', () => chooseLang(b.dataset.lang)));
   document.querySelectorAll('#trackSeg .seg__btn').forEach((b) => b.addEventListener('click', () => setExam(b.dataset.exam)));
 
   document.querySelectorAll('[data-go]').forEach((el) => {

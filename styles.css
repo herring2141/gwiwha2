@@ -308,6 +308,33 @@ body.exam-mode .question-box .zh { color: #6b7280; font-family: -apple-system, "
 /* ===== 시험 트랙 전환(홈 상단) ===== */
 .track-seg { margin-bottom: 14px; }
 .track-seg .seg__btn { font-size: .76rem; padding: 9px 4px; line-height: 1.2; white-space: normal; text-align: center; }
+/* ===== 첫 실행 국가/언어(주석) 선택 splash ===== */
+.lang-splash {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; background: rgba(15, 23, 42, .55); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+}
+.lang-splash.hidden { display: none; }
+.lang-splash__card {
+  width: 100%; max-width: 420px; background: var(--card);
+  border-radius: 20px; box-shadow: 0 14px 44px rgba(17, 24, 39, .28);
+  padding: 28px 22px 24px; text-align: center;
+}
+.lang-splash__flag { font-size: 2.4rem; line-height: 1; }
+.lang-splash__title { margin: 10px 0 6px; font-size: 1.15rem; color: var(--ink); font-weight: 800; }
+.lang-splash__desc { margin: 0 0 18px; font-size: .82rem; color: var(--gray); line-height: 1.5; }
+.lang-splash__opts { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.lang-opt {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 16px 8px; background: var(--blue-soft); border: 1.5px solid #dbe5ff;
+  border-radius: 14px; cursor: pointer; color: inherit;
+  transition: transform .08s ease, border-color .12s ease, box-shadow .12s ease;
+}
+.lang-opt:hover, .lang-opt:focus-visible { border-color: var(--blue); box-shadow: var(--shadow); transform: translateY(-1px); outline: none; }
+.lang-opt__flag { font-size: 1.7rem; line-height: 1; }
+.lang-opt__name { font-weight: 700; color: var(--ink); font-size: .98rem; }
+.lang-opt__sub { font-size: .68rem; color: var(--gray); }
+
 /* ===== 홈 하단 제작자 크레딧(학습 비방해, 홈에서만 — 차분·연한 톤) ===== */
 .app-credit {
   margin: 32px 8px max(env(safe-area-inset-bottom), 22px);

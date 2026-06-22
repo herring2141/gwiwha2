@@ -20,6 +20,21 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- 첫 실행: 국가/언어(주석) 선택 -->
+  <div id="langSplash" class="lang-splash hidden" role="dialog" aria-modal="true" aria-label="Select language">
+    <div class="lang-splash__card">
+      <div class="lang-splash__flag">🇰🇷</div>
+      <h2 class="lang-splash__title">언어 선택 · Language</h2>
+      <p class="lang-splash__desc">문제와 함께 볼 모국어 주석을 고르세요.<br>Choose the language for in-question notes.</p>
+      <div class="lang-splash__opts">
+        <button class="lang-opt" data-lang="ko"><span class="lang-opt__flag">🇰🇷</span><span class="lang-opt__name">한국어</span><span class="lang-opt__sub">주석 없음</span></button>
+        <button class="lang-opt" data-lang="zh"><span class="lang-opt__flag">🇨🇳</span><span class="lang-opt__name">中文</span><span class="lang-opt__sub">中文注释</span></button>
+        <button class="lang-opt" data-lang="vi"><span class="lang-opt__flag">🇻🇳</span><span class="lang-opt__name">Tiếng Việt</span><span class="lang-opt__sub">Chú thích tiếng Việt</span></button>
+        <button class="lang-opt" data-lang="th"><span class="lang-opt__flag">🇹🇭</span><span class="lang-opt__name">ภาษาไทย</span><span class="lang-opt__sub">คำอธิบายภาษาไทย</span></button>
+      </div>
+    </div>
+  </div>
+
   <header class="appbar">
     <button id="homeBtn" class="appbar__home" aria-label="홈">🏠</button>
     <h1 class="appbar__title" data-i18n="app.title">귀화시험 연습</h1>
