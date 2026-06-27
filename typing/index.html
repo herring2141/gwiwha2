@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>한글 타자 연습 · 귀화 작문</title>
+  <meta name="description" content="한글 자판 자리연습부터 귀화 작문 모범답안 따라치기까지 — 두벌식 타자 연습 PWA" />
+  <link rel="canonical" href="https://seunghoonchoi.com/gwiwha/typing/" />
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="한글타자" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="appbar">
+    <button id="homeBtn" class="appbar__home" aria-label="홈">🏠</button>
+    <h1 class="appbar__title" data-i18n="app.title">한글 타자 연습</h1>
+    <a class="appbar__back" href="../" data-i18n="app.toQuiz" title="귀화시험 앱으로">📚 귀화앱</a>
+    <button id="langBtn" class="appbar__lang" title="언어 / 语言">한 · 中</button>
+  </header>
+
+  <main id="app">
+
+    <!-- 홈: 모드 선택 -->
+    <section id="view-home" class="view">
+      <p class="lead" data-i18n="home.lead">한글 자판이 손에 익을 때까지, 한 단계씩 천천히 연습해요.</p>
+      <p class="lead-sub" data-i18n="home.imeTip">💡 컴퓨터 입력기를 한글로 바꾸지 않아도 됩니다. 화면이 알려주는 키를 그대로 누르세요.</p>
+
+      <div class="mode-grid">
+        <button class="mode-card" data-mode="position">
+          <span class="mode-card__icon">⌨️</span>
+          <span class="mode-card__title" data-i18n="mode.position.t">자리 연습</span>
+          <span class="mode-card__sub" data-i18n="mode.position.s">ㅎ ㅁ ㅂ ㅕ — 자판 위치와 손가락 익히기</span>
+        </button>
+        <button class="mode-card" data-mode="syllable">
+          <span class="mode-card__icon">가</span>
+          <span class="mode-card__title" data-i18n="mode.syllable.t">낱글자 연습</span>
+          <span class="mode-card__sub" data-i18n="mode.syllable.s">자음+모음을 모아 한 글자씩 완성</span>
+        </button>
+        <button class="mode-card" data-mode="short">
+          <span class="mode-card__icon">📄</span>
+          <span class="mode-card__title" data-i18n="mode.short.t">단문 연습</span>
+          <span class="mode-card__sub" data-i18n="mode.short.s">짧은 문장 따라 치기</span>
+        </button>
+        <button class="mode-card mode-card--primary" data-mode="long">
+          <span class="mode-card__icon">✍️</span>
+          <span class="mode-card__title" data-i18n="mode.long.t">귀화 작문 연습</span>
+          <span class="mode-card__sub" data-i18n="mode.long.s">작문 모범답안(200자) 따라 치기</span>
+        </button>
+      </div>
+
+      <p class="hint" data-i18n="home.hint">개인용 연습 도구 · 점수는 이 기기에만 저장됩니다.</p>
+    </section>
+
+    <!-- 항목/단계 선택 -->
+    <section id="view-list" class="view hidden">
+      <div class="list-head">
+        <button class="btn btn--ghost btn--sm" data-go="home">← <span data-i18n="common.home">홈</span></button>
+        <h2 class="view-title" id="listTitle">목록</h2>
+      </div>
+      <p class="view-desc" id="listDesc"></p>
+      <div id="listItems" class="select-list"></div>
+    </section>
+
+    <!-- 연습 화면 -->
+    <section id="view-practice" class="view hidden">
+      <div class="prac-top">
+        <button class="btn btn--ghost btn--sm" id="pracBack">← <span data-i18n="common.list">목록</span></button>
+        <span class="prac-title" id="pracTitle"></span>
+      </div>
+
+      <!-- 통계 -->
+      <div class="stat-bar">
+        <div class="stat"><span class="stat__label" data-i18n="stat.time">시간</span><span class="stat__val" id="statTime">0초</span></div>
+        <div class="stat"><span class="stat__label" data-i18n="stat.speed">타수</span><span class="stat__val" id="statSpeed">0</span></div>
+        <div class="stat"><span class="stat__label" data-i18n="stat.acc">정확도</span><span class="stat__val" id="statAcc">100%</span></div>
+        <div class="stat"><span class="stat__label" data-i18n="stat.miss">오타</span><span class="stat__val" id="statMiss">0</span></div>
+      </div>
+      <div class="progress-bar"><div id="pracProgress" class="progress-bar__fill"></div></div>
+
+      <!-- 의미/주제 (단문·장문) -->
+      <div id="pracMeta" class="prac-meta hidden"></div>
+
+      <!-- 타깃 표시 -->
+      <div id="targetBox" class="target-box"></div>
+
+      <!-- 다음 키 안내 -->
+      <div class="nextkey" id="nextKey"></div>
+
+      <!-- 가상 키보드 -->
+      <div class="kbd-wrap">
+        <div id="keyboard" class="keyboard" role="group" aria-label="가상 키보드"></div>
+        <div class="hands" id="hands"></div>
+      </div>
+
+      <!-- 완료 -->
+      <div id="pracDone" class="prac-done hidden"></div>
+    </section>
+
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="hangul.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js'); });
+    }
+  </script>
+</body>
+</html>
