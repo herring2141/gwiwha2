@@ -1,12 +1,16 @@
 /* app.js — 한글 타자 연습 (두벌식)
    모드: 자리연습 / 낱글자 / 단문 / 귀화 작문(장문)
-   입력은 hangul.js 오토마타로 처리(OS IME 불필요). 정답은 키스트로크 단위 비교. */
+   입력은 hangul.js 오토마타로 처리(OS IME 불필요). 정답은 키스트로크 단위 비교.
+   언어: ko/zh/vi/th (귀화앱과 동일). 귀화앱이 고른 언어(nq_lang)를 물려받음. */
 (function () {
   'use strict';
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
-  // ===== I18N =====
+  var LANG_NAME = { ko: '한국어', zh: '中文', vi: 'Tiếng Việt', th: 'ภาษาไทย' };
+  var LANG_ORDER = ['ko', 'zh', 'vi', 'th'];
+
+  // ===== I18N (ko / zh / vi / th) =====
   var I18N = {
     ko: {
       'app.title': '한글 타자 연습', 'app.toQuiz': '📚 귀화앱',
@@ -22,11 +26,12 @@
       'next.this': '이 자리', 'next.char': '다음', 'next.space': '스페이스', 'next.enter': '엔터',
       'next.shift': 'Shift 함께', 'done.title': '잘했어요! 완성 🎉', 'done.best': '최고 기록 경신! ⭐',
       'done.speed': '타/분', 'done.acc': '정확도', 'done.time': '걸린 시간',
+      'done.nextHint': 'Enter 로 다음', 'done.listHint': 'Enter 로 목록',
       'list.position': '단계를 골라 시작하세요. 처음에는 ‘기본 자리’부터.',
       'list.syllable': '쉬운 글자부터 한 글자씩 완성해 보세요.',
       'list.short': '짧은 문장을 따라 치며 손을 풀어요.',
       'list.long': '귀화 작문 시험에 나오는 주제의 모범답안입니다. 의미를 보며 따라 치세요.',
-      'sec.sec': '초', 'best.label': '최고', 'topic.label': '주제'
+      'sec.sec': '초', 'best.label': '최고', 'topic.label': '주제', 'echo.label': '내가 친 것'
     },
     zh: {
       'app.title': '韩文打字练习', 'app.toQuiz': '📚 入籍App',
@@ -42,38 +47,88 @@
       'next.this': '此键', 'next.char': '下一个', 'next.space': '空格', 'next.enter': '回车',
       'next.shift': '同时按 Shift', 'done.title': '做得好！完成 🎉', 'done.best': '刷新最佳成绩！⭐',
       'done.speed': '键/分', 'done.acc': '准确率', 'done.time': '用时',
+      'done.nextHint': '按 Enter 继续', 'done.listHint': '按 Enter 回列表',
       'list.position': '选择一个阶段开始。第一次请从“基本键位”开始。',
       'list.syllable': '从简单的字开始，一个字一个字完成。',
       'list.short': '跟着打短句子，活动手指。',
       'list.long': '这些是入籍作文考试主题的范文。看着意思跟着打。',
-      'sec.sec': '秒', 'best.label': '最佳', 'topic.label': '主题'
+      'sec.sec': '秒', 'best.label': '最佳', 'topic.label': '主题', 'echo.label': '我打的'
+    },
+    vi: {
+      'app.title': 'Luyện gõ tiếng Hàn', 'app.toQuiz': '📚 App nhập tịch',
+      'home.lead': 'Luyện từng bước cho đến khi quen bàn phím tiếng Hàn.',
+      'home.imeTip': '💡 Không cần chuyển bộ gõ máy tính sang tiếng Hàn. Chỉ cần bấm đúng phím màn hình chỉ.',
+      'home.hint': 'Công cụ luyện tập cá nhân · Điểm chỉ lưu trên thiết bị này.',
+      'mode.position.t': 'Luyện vị trí phím', 'mode.position.s': 'ㅎ ㅁ ㅂ ㅕ — làm quen vị trí phím và ngón tay',
+      'mode.syllable.t': 'Luyện từng chữ', 'mode.syllable.s': 'Ghép phụ âm + nguyên âm thành từng chữ',
+      'mode.short.t': 'Luyện câu ngắn', 'mode.short.s': 'Gõ theo câu ngắn',
+      'mode.long.t': 'Luyện viết bài nhập tịch', 'mode.long.s': 'Gõ theo bài văn mẫu (200 chữ)',
+      'common.home': 'Trang chủ', 'common.list': 'Danh sách', 'common.retry': 'Làm lại', 'common.next': 'Tiếp →',
+      'stat.time': 'Thời gian', 'stat.speed': 'Tốc độ', 'stat.acc': 'Chính xác', 'stat.miss': 'Lỗi',
+      'next.this': 'Phím này', 'next.char': 'Tiếp', 'next.space': 'Phím cách', 'next.enter': 'Enter',
+      'next.shift': 'Bấm kèm Shift', 'done.title': 'Giỏi lắm! Hoàn thành 🎉', 'done.best': 'Phá kỷ lục! ⭐',
+      'done.speed': 'phím/phút', 'done.acc': 'Chính xác', 'done.time': 'Thời gian',
+      'done.nextHint': 'Nhấn Enter để tiếp', 'done.listHint': 'Nhấn Enter về danh sách',
+      'list.position': 'Chọn một bước để bắt đầu. Lần đầu hãy bắt đầu từ “phím cơ bản”.',
+      'list.syllable': 'Bắt đầu từ chữ dễ, hoàn thành từng chữ một.',
+      'list.short': 'Gõ theo câu ngắn để làm nóng tay.',
+      'list.long': 'Đây là bài văn mẫu cho các chủ đề thi viết nhập tịch. Vừa xem nghĩa vừa gõ theo.',
+      'sec.sec': ' giây', 'best.label': 'Tốt nhất', 'topic.label': 'Chủ đề', 'echo.label': 'Tôi đã gõ'
+    },
+    th: {
+      'app.title': 'ฝึกพิมพ์ภาษาเกาหลี', 'app.toQuiz': '📚 แอปแปลงสัญชาติ',
+      'home.lead': 'ฝึกทีละขั้นจนกว่าจะคุ้นกับแป้นพิมพ์ภาษาเกาหลี',
+      'home.imeTip': '💡 ไม่ต้องเปลี่ยนตัวพิมพ์ในเครื่องเป็นภาษาเกาหลี แค่กดปุ่มตามที่หน้าจอบอก',
+      'home.hint': 'เครื่องมือฝึกส่วนตัว · คะแนนบันทึกเฉพาะในเครื่องนี้',
+      'mode.position.t': 'ฝึกตำแหน่งแป้น', 'mode.position.s': 'ㅎ ㅁ ㅂ ㅕ — คุ้นเคยกับตำแหน่งแป้นและนิ้ว',
+      'mode.syllable.t': 'ฝึกตัวอักษร', 'mode.syllable.s': 'รวมพยัญชนะ+สระให้เป็นตัวอักษรทีละตัว',
+      'mode.short.t': 'ฝึกประโยคสั้น', 'mode.short.s': 'พิมพ์ตามประโยคสั้น',
+      'mode.long.t': 'ฝึกเขียนเรียงความแปลงสัญชาติ', 'mode.long.s': 'พิมพ์ตามเรียงความตัวอย่าง (200 ตัว)',
+      'common.home': 'หน้าหลัก', 'common.list': 'รายการ', 'common.retry': 'เริ่มใหม่', 'common.next': 'ถัดไป →',
+      'stat.time': 'เวลา', 'stat.speed': 'ความเร็ว', 'stat.acc': 'ความแม่นยำ', 'stat.miss': 'พิมพ์ผิด',
+      'next.this': 'ปุ่มนี้', 'next.char': 'ถัดไป', 'next.space': 'เว้นวรรค', 'next.enter': 'Enter',
+      'next.shift': 'กด Shift ด้วย', 'done.title': 'เยี่ยมมาก! เสร็จแล้ว 🎉', 'done.best': 'ทำลายสถิติ! ⭐',
+      'done.speed': 'ปุ่ม/นาที', 'done.acc': 'ความแม่นยำ', 'done.time': 'เวลาที่ใช้',
+      'done.nextHint': 'กด Enter เพื่อไปต่อ', 'done.listHint': 'กด Enter กลับรายการ',
+      'list.position': 'เลือกขั้นเพื่อเริ่ม ครั้งแรกเริ่มจาก “แป้นพื้นฐาน”',
+      'list.syllable': 'เริ่มจากตัวอักษรง่าย ๆ ทำให้เสร็จทีละตัว',
+      'list.short': 'พิมพ์ตามประโยคสั้นเพื่ออุ่นเครื่องนิ้ว',
+      'list.long': 'นี่คือเรียงความตัวอย่างของหัวข้อสอบเขียนแปลงสัญชาติ ดูความหมายแล้วพิมพ์ตาม',
+      'sec.sec': ' วิ', 'best.label': 'ดีที่สุด', 'topic.label': 'หัวข้อ', 'echo.label': 'ที่ฉันพิมพ์'
     }
   };
-  var lang = localStorage.getItem('typing_lang') || 'ko';
+  function readInheritedLang() {
+    var own = localStorage.getItem('typing_lang');
+    if (own && LANG_NAME[own]) return own;
+    try { var p = JSON.parse(localStorage.getItem('nq_lang') || 'null'); if (p && LANG_NAME[p]) return p; } catch (e) {}
+    return 'ko';
+  }
+  var lang = readInheritedLang();
   function t(k) { return (I18N[lang] && I18N[lang][k]) || I18N.ko[k] || k; }
+  function L(o) { return (o && (o[lang] || o.ko)) || ''; }
 
   // ===== 콘텐츠 =====
   var POSITION_STEPS = [
-    { title: { ko: '기본 자리 (가운뎃줄)', zh: '基本键位（中排）' }, set: ['ㅁ', 'ㄴ', 'ㅇ', 'ㄹ', 'ㅎ', 'ㅗ', 'ㅓ', 'ㅏ', 'ㅣ'] },
-    { title: { ko: '윗줄', zh: '上排' }, set: ['ㅂ', 'ㅈ', 'ㄷ', 'ㄱ', 'ㅅ', 'ㅛ', 'ㅕ', 'ㅑ', 'ㅐ', 'ㅔ'] },
-    { title: { ko: '아랫줄', zh: '下排' }, set: ['ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅠ', 'ㅜ', 'ㅡ'] },
-    { title: { ko: '쌍자음·이중모음 (Shift)', zh: '双辅音·复元音（Shift）' }, set: ['ㅃ', 'ㅉ', 'ㄸ', 'ㄲ', 'ㅆ', 'ㅒ', 'ㅖ'] },
-    { title: { ko: '전체 섞어서', zh: '全部混合' }, set: ['ㅁ', 'ㄴ', 'ㅇ', 'ㄹ', 'ㅎ', 'ㅗ', 'ㅓ', 'ㅏ', 'ㅣ', 'ㅂ', 'ㅈ', 'ㄷ', 'ㄱ', 'ㅅ', 'ㅕ', 'ㅐ', 'ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅜ', 'ㅡ'] }
+    { title: { ko: '기본 자리 (가운뎃줄)', zh: '基本键位（中排）', vi: 'Phím cơ bản (hàng giữa)', th: 'แป้นพื้นฐาน (แถวกลาง)' }, set: ['ㅁ', 'ㄴ', 'ㅇ', 'ㄹ', 'ㅎ', 'ㅗ', 'ㅓ', 'ㅏ', 'ㅣ'] },
+    { title: { ko: '윗줄', zh: '上排', vi: 'Hàng trên', th: 'แถวบน' }, set: ['ㅂ', 'ㅈ', 'ㄷ', 'ㄱ', 'ㅅ', 'ㅛ', 'ㅕ', 'ㅑ', 'ㅐ', 'ㅔ'] },
+    { title: { ko: '아랫줄', zh: '下排', vi: 'Hàng dưới', th: 'แถวล่าง' }, set: ['ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅠ', 'ㅜ', 'ㅡ'] },
+    { title: { ko: '쌍자음·이중모음 (Shift)', zh: '双辅音·复元音（Shift）', vi: 'Phụ âm đôi · nguyên âm đôi (Shift)', th: 'พยัญชนะคู่·สระประสม (Shift)' }, set: ['ㅃ', 'ㅉ', 'ㄸ', 'ㄲ', 'ㅆ', 'ㅒ', 'ㅖ'] },
+    { title: { ko: '전체 섞어서', zh: '全部混合', vi: 'Trộn tất cả', th: 'รวมทั้งหมด' }, set: ['ㅁ', 'ㄴ', 'ㅇ', 'ㄹ', 'ㅎ', 'ㅗ', 'ㅓ', 'ㅏ', 'ㅣ', 'ㅂ', 'ㅈ', 'ㄷ', 'ㄱ', 'ㅅ', 'ㅕ', 'ㅐ', 'ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅜ', 'ㅡ'] }
   ];
   var SYLLABLE_STEPS = [
-    { title: { ko: '기본 글자 (자음 + ㅏ)', zh: '基本字（辅音+ㅏ）' }, text: '가 나 다 라 마 바 사 아 자 차 카 타 파 하' },
-    { title: { ko: 'ㄱ + 모든 모음', zh: 'ㄱ + 所有元音' }, text: '가 갸 거 겨 고 교 구 규 그 기' },
-    { title: { ko: 'ㅇ + 모든 모음', zh: 'ㅇ + 所有元音' }, text: '아 야 어 여 오 요 우 유 으 이' },
-    { title: { ko: '받침이 있는 글자', zh: '带收音的字' }, text: '강 산 물 밤 곰 집 발 손 눈 별 꽃 옷' },
-    { title: { ko: '쉬운 낱말', zh: '简单词语' }, text: '한국 사랑 가족 친구 학교 감사 행복 우리 사람 음식 한글 나라' }
+    { title: { ko: '기본 글자 (자음 + ㅏ)', zh: '基本字（辅音+ㅏ）', vi: 'Chữ cơ bản (phụ âm + ㅏ)', th: 'ตัวอักษรพื้นฐาน (พยัญชนะ + ㅏ)' }, text: '가 나 다 라 마 바 사 아 자 차 카 타 파 하' },
+    { title: { ko: 'ㄱ + 모든 모음', zh: 'ㄱ + 所有元音', vi: 'ㄱ + tất cả nguyên âm', th: 'ㄱ + สระทั้งหมด' }, text: '가 갸 거 겨 고 교 구 규 그 기' },
+    { title: { ko: 'ㅇ + 모든 모음', zh: 'ㅇ + 所有元音', vi: 'ㅇ + tất cả nguyên âm', th: 'ㅇ + สระทั้งหมด' }, text: '아 야 어 여 오 요 우 유 으 이' },
+    { title: { ko: '받침이 있는 글자', zh: '带收音的字', vi: 'Chữ có patchim', th: 'ตัวอักษรที่มีตัวสะกด' }, text: '강 산 물 밤 곰 집 발 손 눈 별 꽃 옷' },
+    { title: { ko: '쉬운 낱말', zh: '简单词语', vi: 'Từ đơn giản', th: 'คำง่าย ๆ' }, text: '한국 사랑 가족 친구 학교 감사 행복 우리 사람 음식 한글 나라' }
   ];
   var CURATED_SHORT = [
-    { text: '안녕하세요.', zh: '你好。' },
-    { text: '만나서 반갑습니다.', zh: '很高兴见到你。' },
-    { text: '저는 외국에서 왔어요.', zh: '我来自外国。' },
-    { text: '한국 생활이 즐거워요.', zh: '韩国生活很愉快。' },
-    { text: '한국어를 열심히 배워요.', zh: '我努力学习韩语。' },
-    { text: '오늘도 좋은 하루 보내세요.', zh: '今天也祝你过得愉快。' }
+    { text: '안녕하세요.', trans: { zh: '你好。', vi: 'Xin chào.', th: 'สวัสดีค่ะ' } },
+    { text: '만나서 반갑습니다.', trans: { zh: '很高兴见到你。', vi: 'Rất vui được gặp bạn.', th: 'ยินดีที่ได้รู้จัก' } },
+    { text: '저는 외국에서 왔어요.', trans: { zh: '我来自外国。', vi: 'Tôi đến từ nước ngoài.', th: 'ฉันมาจากต่างประเทศ' } },
+    { text: '한국 생활이 즐거워요.', trans: { zh: '韩国生活很愉快。', vi: 'Cuộc sống ở Hàn Quốc rất vui.', th: 'ชีวิตในเกาหลีสนุกดี' } },
+    { text: '한국어를 열심히 배워요.', trans: { zh: '我努力学习韩语。', vi: 'Tôi chăm chỉ học tiếng Hàn.', th: 'ฉันตั้งใจเรียนภาษาเกาหลี' } },
+    { text: '오늘도 좋은 하루 보내세요.', trans: { zh: '今天也祝你过得愉快。', vi: 'Chúc bạn một ngày tốt lành.', th: 'ขอให้วันนี้เป็นวันที่ดี' } }
   ];
 
   function topicOf(q) {
@@ -83,25 +138,26 @@
     return s;
   }
   function cleanPrompt(q) { return (q || '').replace(/<br\s*\/?>/gi, ' / '); }
+  function transOf(d) { return { zh: d.model_zh || '', vi: d.model_vi || '', th: d.model_th || '' }; }
 
   var DATA = window.TYPING_WRITING || [];
   var NAT = DATA.filter(function (d) { return (d.exam || 'nat') === 'nat'; });
   var PRE = DATA.filter(function (d) { return d.exam === 'pre'; });
 
-  var SHORT_ITEMS = CURATED_SHORT.map(function (c) { return { text: c.text, trans: c.zh, kind: 'text' }; })
+  var SHORT_ITEMS = CURATED_SHORT.map(function (c) { return { text: c.text, trans: c.trans, kind: 'text' }; })
     .concat(PRE.map(function (d) {
-      return { text: (d.model || '').trim(), trans: d.model_zh || '', topic: cleanPrompt(d.q), kind: 'text' };
+      return { text: (d.model || '').trim(), trans: transOf(d), topic: cleanPrompt(d.q), kind: 'text' };
     }).filter(function (x) { return x.text; }));
 
   var LONG_ITEMS = NAT.map(function (d) {
-    return { text: (d.model || '').trim(), trans: d.model_zh || '', topic: topicOf(d.q), kind: 'text', id: d.id };
+    return { text: (d.model || '').trim(), trans: transOf(d), topic: topicOf(d.q), kind: 'text', id: d.id };
   }).filter(function (x) { return x.text; });
 
   var MODES = {
-    position: { kind: 'position', title: { ko: '자리 연습', zh: '指位练习' }, desc: 'list.position', items: POSITION_STEPS },
-    syllable: { kind: 'text', title: { ko: '낱글자 연습', zh: '单字练习' }, desc: 'list.syllable', items: SYLLABLE_STEPS },
-    short: { kind: 'text', title: { ko: '단문 연습', zh: '短句练习' }, desc: 'list.short', items: SHORT_ITEMS },
-    long: { kind: 'text', title: { ko: '귀화 작문 연습', zh: '入籍作文练习' }, desc: 'list.long', items: LONG_ITEMS }
+    position: { kind: 'position', title: { ko: '자리 연습', zh: '指位练习', vi: 'Luyện vị trí phím', th: 'ฝึกตำแหน่งแป้น' }, desc: 'list.position', items: POSITION_STEPS },
+    syllable: { kind: 'text', title: { ko: '낱글자 연습', zh: '单字练习', vi: 'Luyện từng chữ', th: 'ฝึกตัวอักษร' }, desc: 'list.syllable', items: SYLLABLE_STEPS },
+    short: { kind: 'text', title: { ko: '단문 연습', zh: '短句练习', vi: 'Luyện câu ngắn', th: 'ฝึกประโยคสั้น' }, desc: 'list.short', items: SHORT_ITEMS },
+    long: { kind: 'text', title: { ko: '귀화 작문 연습', zh: '入籍作文练习', vi: 'Luyện viết bài nhập tịch', th: 'ฝึกเขียนเรียงความแปลงสัญชาติ' }, desc: 'list.long', items: LONG_ITEMS }
   };
 
   // ===== 가상 키보드 레이아웃 =====
@@ -118,7 +174,7 @@
     [{ code: 'ShiftLeft', label: 'Shift', cls: 'special widest' }, 'KeyZ', 'KeyX', 'KeyC', 'KeyV', 'KeyB', 'KeyN', 'KeyM', 'Comma', 'Period', 'Slash', { code: 'ShiftRight', label: 'Shift', cls: 'special widest' }],
     [{ code: 'Space', label: '', cls: 'spacekey' }]
   ];
-  var keyEls = {}; // code -> element
+  var keyEls = {};
 
   function buildKeyboard() {
     var kb = $('#keyboard');
@@ -164,7 +220,7 @@
       var d = document.createElement('div');
       d.className = 'finger-dot';
       d.dataset.hand = fo[0]; d.dataset.finger = fo[1];
-      d.innerHTML = '<span class="dot"></span><span class="lbl">' + HG.HAND_LABEL[lang][fo[0]] + '<br>' + HG.FINGER_LABEL[lang][fo[1]] + '</span>';
+      d.innerHTML = '<span class="dot"></span><span class="lbl">' + esc(HG.HAND_LABEL[lang][fo[0]]) + '<br>' + esc(HG.FINGER_LABEL[lang][fo[1]]) + '</span>';
       h.appendChild(d);
     });
   }
@@ -198,20 +254,23 @@
   function show(view) { $$('.view').forEach(function (v) { v.classList.add('hidden'); }); $('#view-' + view).classList.remove('hidden'); window.scrollTo(0, 0); }
 
   function goHome() { stopTimer(); show('home'); }
+
   function goList(mode) {
     var cfg = MODES[mode];
-    $('#listTitle').textContent = cfg.title[lang] || cfg.title.ko;
+    $('#listTitle').textContent = L(cfg.title);
     $('#listDesc').textContent = t(cfg.desc);
     var box = $('#listItems'); box.innerHTML = '';
     cfg.items.forEach(function (item, i) {
       var b = document.createElement('button');
       b.className = 'select-item';
       var title, sub = '';
-      if (cfg.kind === 'position') { title = item.title[lang] || item.title.ko; sub = item.set.join(' '); }
-      else { title = (item.topic ? item.topic : item.text); if (item.topic) sub = item.text; }
+      if (cfg.kind === 'position') { title = L(item.title); sub = item.set.join(' '); }
+      else if (mode === 'syllable') { title = L(item.title); sub = item.text; }
+      else if (mode === 'long') { title = item.topic; sub = (lang === 'ko') ? item.text : ((item.trans && item.trans[lang]) || item.text); }
+      else { title = item.text; sub = (lang === 'ko') ? '' : ((item.trans && item.trans[lang]) || ''); }
       var best = getBest(mode, i);
-      b.innerHTML = '<span class="select-item__main"><span class="select-item__title">' + esc(clip(title, 42)) + '</span>' +
-        (sub ? '<span class="select-item__sub">' + esc(clip(sub, 60)) + '</span>' : '') + '</span>' +
+      b.innerHTML = '<span class="select-item__main"><span class="select-item__title">' + esc(title) + '</span>' +
+        (sub ? '<span class="select-item__sub">' + esc(clip(sub, 70)) + '</span>' : '') + '</span>' +
         (best ? '<span class="select-item__best">' + t('best.label') + ' ' + best + '</span>' : '');
       b.addEventListener('click', function () { startPractice(mode, i); });
       box.appendChild(b);
@@ -224,13 +283,13 @@
   function startPractice(mode, idx) {
     state = newState(mode, idx);
     var cfg = MODES[mode];
-    $('#pracTitle').textContent = (cfg.kind === 'position' ? (state.item.title[lang] || state.item.title.ko) : (cfg.title[lang] || cfg.title.ko));
-    // 의미/주제
+    $('#pracTitle').textContent = (cfg.kind === 'position' ? L(state.item.title) : L(cfg.title));
     var meta = $('#pracMeta');
-    if (state.kind === 'text' && (state.item.topic || (state.item.trans && lang === 'zh'))) {
+    var tr = state.item.trans && state.item.trans[lang];
+    if (state.kind === 'text' && (state.item.topic || (tr && lang !== 'ko'))) {
       var html = '';
       if (state.item.topic) html += '<div class="prac-meta__topic">' + (mode === 'long' ? (t('topic.label') + ': ') : '') + esc(state.item.topic) + '</div>';
-      if (state.item.trans) html += '<div class="prac-meta__trans">' + esc(state.item.trans) + '</div>';
+      if (tr && lang !== 'ko') html += '<div class="prac-meta__trans">' + esc(tr) + '</div>';
       meta.innerHTML = html; meta.classList.remove('hidden');
     } else { meta.classList.add('hidden'); }
     $('#pracDone').classList.add('hidden');
@@ -252,8 +311,7 @@
     if (state.kind === 'position') {
       if (state.posIdx >= state.seq.length) return null;
       var jamo = state.seq[state.posIdx];
-      var key = HG.JAMO_TO_KEY[jamo];
-      return { type: 'jamo', jamo: jamo, key: key };
+      return { type: 'jamo', jamo: jamo, key: HG.JAMO_TO_KEY[jamo] };
     } else {
       if (state.pos >= state.tokens.length) return null;
       var tok = state.tokens[state.pos];
@@ -266,12 +324,7 @@
     var exp = currentExpected();
     if (!exp) return false;
     startTimerIfNeeded();
-    var ok;
-    if (state.kind === 'position') {
-      ok = HG.producedJamo(code, shift) === exp.jamo;
-    } else {
-      ok = HG.matches(exp.tok, code, shift);
-    }
+    var ok = state.kind === 'position' ? (HG.producedJamo(code, shift) === exp.jamo) : HG.matches(exp.tok, code, shift);
     if (ok) {
       if (state.kind === 'position') state.posIdx++; else state.pos++;
       state.correct++;
@@ -303,8 +356,8 @@
   }
 
   function onVirtualKey(code) {
+    if (state && state.finished) { if (code === 'Enter') goNext(); return; }
     var exp = currentExpected();
-    // 화면 키 탭: 기대 키와 같으면 필요한 shift 자동 적용
     var shift = (exp && exp.key && exp.key.code === code) ? !!exp.key.shift : false;
     if (code === 'Backspace') { backspace(); return; }
     if (code === 'ShiftLeft' || code === 'ShiftRight' || code === 'CapsLock' || code === 'Tab') return;
@@ -316,12 +369,31 @@
     if ($('#view-practice').classList.contains('hidden')) return;
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     var code = e.code;
-    var typingKey = HG.DUBEOL[code] || PUNCT[code] || code === 'Space' || code === 'Enter';
+    // 완료 후 Enter = 다음
+    if (state && state.finished) {
+      if (code === 'Enter') { e.preventDefault(); goNext(); }
+      return;
+    }
     if (code === 'Backspace') { e.preventDefault(); backspace(); return; }
+    if (code === 'Enter') {
+      var exp = currentExpected();
+      e.preventDefault();
+      if (exp && exp.type === 'enter') handleInput(code, e.shiftKey);
+      // 그 외 잘못 누른 Enter는 무시(오타 아님)
+      return;
+    }
+    var typingKey = HG.DUBEOL[code] || PUNCT[code] || code === 'Space';
     if (!typingKey) return;
     e.preventDefault();
     handleInput(code, e.shiftKey);
   });
+
+  function goNext() {
+    if (!state) return;
+    var hasNext = state.idx + 1 < MODES[state.mode].items.length;
+    if (hasNext) startPractice(state.mode, state.idx + 1);
+    else goList(state.mode);
+  }
 
   // ===== 렌더 =====
   function render() {
@@ -354,16 +426,14 @@
       var ch = chars[c];
       var st = c < currentCi ? 'done' : c === currentCi ? 'current' : 'pending';
       if (ch === ' ') {
-        // 현재 글자가 공백이면 강조 표시, 아니면 자연 공백(줄바꿈 가능 지점)
         html += (c === currentCi) ? '<span class="ch current sp"> </span>' : ' ';
       } else {
         html += '<span class="ch ' + st + '">' + esc(ch) + '</span>';
       }
     }
     html += '</div>';
-    // 입력 echo
     var typed = HG.compose(toks.slice(0, pos));
-    html += '<div class="txt-echo"><span class="txt-echo__label">' + (lang === 'zh' ? '我打的' : '내가 친 것') + '</span>' +
+    html += '<div class="txt-echo"><span class="txt-echo__label">' + esc(t('echo.label')) + '</span>' +
       esc(typed) + '<span class="caret"></span></div>';
     box.innerHTML = html;
   }
@@ -382,9 +452,9 @@
     var key = exp.key;
     if (key && HG.FINGER[key.code]) {
       var f = HG.FINGER[key.code];
-      html += '<span class="nk-finger">' + HG.HAND_LABEL[lang][f.hand] + ' ' + HG.FINGER_LABEL[lang][f.finger] + '</span>';
+      html += '<span class="nk-finger">' + esc(HG.HAND_LABEL[lang][f.hand] + ' ' + HG.FINGER_LABEL[lang][f.finger]) + '</span>';
     }
-    if (key && key.shift) html += '<span class="nk-shift">⇧ ' + t('next.shift') + '</span>';
+    if (key && key.shift) html += '<span class="nk-shift">⇧ ' + esc(t('next.shift')) + '</span>';
     nk.innerHTML = html;
   }
 
@@ -394,14 +464,12 @@
     var exp = currentExpected();
     if (!exp || !exp.key) return;
     var key = exp.key;
-    var el = keyEls[key.code];
-    if (el) el.classList.add('next');
+    if (keyEls[key.code]) keyEls[key.code].classList.add('next');
     if (key.shift) {
       var f = HG.FINGER[key.code];
       var shiftCode = (f && f.hand === 'L') ? 'ShiftRight' : 'ShiftLeft';
       if (keyEls[shiftCode]) keyEls[shiftCode].classList.add('next-shift');
     }
-    // 손가락 점등
     var fin = HG.FINGER[key.code];
     if (fin && fin.finger !== 'thumb') {
       $$('.finger-dot').forEach(function (d) { if (d.dataset.hand === fin.hand && d.dataset.finger === fin.finger) d.classList.add('on'); });
@@ -443,11 +511,11 @@
       '<div class="prac-done__stat"><b>' + Math.floor(elapsed) + t('sec.sec') + '</b><span>' + t('done.time') + '</span></div>' +
       '</div><div class="prac-done__actions">' +
       '<button class="btn btn--ghost" id="doneRetry">↻ ' + t('common.retry') + '</button>' +
-      (hasNext ? '<button class="btn btn--primary" id="doneNext">' + t('common.next') + '</button>' : '') +
-      '</div>';
+      '<button class="btn btn--primary" id="doneNext">' + (hasNext ? t('common.next') : t('common.list')) + '</button>' +
+      '</div><div class="prac-done__hint">⏎ ' + (hasNext ? t('done.nextHint') : t('done.listHint')) + '</div>';
     d.classList.remove('hidden');
     $('#doneRetry').addEventListener('click', function () { startPractice(state.mode, state.idx); });
-    if (hasNext) $('#doneNext').addEventListener('click', function () { startPractice(state.mode, state.idx + 1); });
+    $('#doneNext').addEventListener('click', goNext);
     d.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
@@ -460,27 +528,22 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function clip(s, n) { s = String(s); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
 
-  // ===== i18n 적용 =====
+  // ===== 언어 =====
+  function setLang(l) {
+    if (!LANG_NAME[l]) return;
+    lang = l;
+    localStorage.setItem('typing_lang', l);
+    try { localStorage.setItem('nq_lang', JSON.stringify(l)); } catch (e) {} // 귀화앱과 동기화
+    applyI18n();
+    buildHands();
+    if (!$('#view-list').classList.contains('hidden')) goList(state.mode);
+    else if (!$('#view-practice').classList.contains('hidden')) startPractice(state.mode, state.idx);
+  }
+
   function applyI18n() {
     document.documentElement.lang = lang;
     $$('[data-i18n]').forEach(function (el) { el.textContent = t(el.getAttribute('data-i18n')); });
-    $('#langBtn').textContent = lang === 'ko' ? '한 · 中' : '中 · 한';
-  }
-
-  // ===== 이벤트 =====
-  function bind() {
-    $('#homeBtn').addEventListener('click', goHome);
-    $('#langBtn').addEventListener('click', function () {
-      lang = lang === 'ko' ? 'zh' : 'ko';
-      localStorage.setItem('typing_lang', lang);
-      applyI18n(); buildHands();
-      if (!$('#view-home').classList.contains('hidden')) { /* home */ }
-      else if (!$('#view-list').classList.contains('hidden')) goList(state.mode);
-      else if (!$('#view-practice').classList.contains('hidden')) { startPractice(state.mode, state.idx); }
-    });
-    $$('.mode-card').forEach(function (c) { c.addEventListener('click', function () { goList(c.dataset.mode); }); });
-    $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { var g = b.dataset.go; if (g === 'home') goHome(); }); });
-    $('#pracBack').addEventListener('click', function () { stopTimer(); goList(state.mode); });
+    $('#langBtn').textContent = '🌐 ' + LANG_NAME[lang];
   }
 
   // ===== 딥링크 (#모드/번호) =====
@@ -489,6 +552,18 @@
     var mode = m[0], idx = parseInt(m[1], 10);
     if (MODES[mode] && idx >= 0 && idx < MODES[mode].items.length) { startPractice(mode, idx); return true; }
     return false;
+  }
+
+  // ===== 이벤트 =====
+  function bind() {
+    $('#homeBtn').addEventListener('click', goHome);
+    $('#langBtn').addEventListener('click', function () {
+      var i = LANG_ORDER.indexOf(lang);
+      setLang(LANG_ORDER[(i + 1) % LANG_ORDER.length]);
+    });
+    $$('.mode-card').forEach(function (c) { c.addEventListener('click', function () { goList(c.dataset.mode); }); });
+    $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { if (b.dataset.go === 'home') goHome(); }); });
+    $('#pracBack').addEventListener('click', function () { stopTimer(); goList(state.mode); });
   }
 
   // ===== 초기화 =====

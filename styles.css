@@ -98,6 +98,8 @@ html, body {
 .menu-card__icon { font-size: 1.8rem; }
 .menu-card__title { font-size: 1.05rem; font-weight: 700; }
 .menu-card__sub { font-size: .82rem; color: var(--gray); }
+/* 링크형 카드(타자 연습 등)도 버튼 카드와 동일하게 — 링크 색/밑줄 제거 */
+a.menu-card, a.menu-card:link, a.menu-card:visited { color: var(--ink); text-decoration: none; }
 .hint { margin-top: 22px; text-align: center; color: var(--gray); font-size: .8rem; }
 
 /* ===== 영역 목록 ===== */

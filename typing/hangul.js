@@ -44,9 +44,14 @@
 
   var FINGER_LABEL = {
     ko: { pinky: '새끼손가락', ring: '약지', middle: '가운뎃손가락', index: '검지', thumb: '엄지' },
-    zh: { pinky: '小指', ring: '无名指', middle: '中指', index: '食指', thumb: '拇指' }
+    zh: { pinky: '小指', ring: '无名指', middle: '中指', index: '食指', thumb: '拇指' },
+    vi: { pinky: 'ngón út', ring: 'ngón áp út', middle: 'ngón giữa', index: 'ngón trỏ', thumb: 'ngón cái' },
+    th: { pinky: 'นิ้วก้อย', ring: 'นิ้วนาง', middle: 'นิ้วกลาง', index: 'นิ้วชี้', thumb: 'นิ้วโป้ง' }
   };
-  var HAND_LABEL = { ko: { L: '왼손', R: '오른손' }, zh: { L: '左手', R: '右手' } };
+  var HAND_LABEL = {
+    ko: { L: '왼손', R: '오른손' }, zh: { L: '左手', R: '右手' },
+    vi: { L: 'tay trái', R: 'tay phải' }, th: { L: 'มือซ้าย', R: 'มือขวา' }
+  };
 
   // ===== 3) 한글 조합 테이블 (유니코드) =====
   var CHO = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];

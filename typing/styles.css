@@ -84,7 +84,7 @@ html, body {
   padding: 14px 16px; cursor: pointer; box-shadow: var(--shadow); text-align: left; font-family: inherit; width: 100%;
 }
 .select-item__main { min-width: 0; }
-.select-item__title { font-size: 1rem; font-weight: 700; display: block; }
+.select-item__title { font-size: 1rem; font-weight: 700; display: block; line-height: 1.4; word-break: keep-all; }
 .select-item__sub { font-size: .82rem; color: var(--gray); display: block; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60vw; }
 .select-item__best { font-size: .78rem; color: var(--blue); font-weight: 700; white-space: nowrap; }
 
@@ -126,8 +126,8 @@ html, body {
 .txt-target .ch.pending { color: #94a3b8; }
 .txt-target .ch.sp { white-space: pre; }
 .txt-target .ch.current.sp { background: var(--blue); border-radius: 4px; }
-.txt-echo { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); font-size: 1.2rem; min-height: 1.6em; color: var(--ink); word-break: keep-all; }
-.txt-echo__label { font-size: .72rem; color: var(--gray); display: block; margin-bottom: 4px; }
+.txt-echo { margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--line); font-size: 1.45rem; line-height: 2.1; min-height: 1.2em; color: var(--ink); word-break: keep-all; }
+.txt-echo__label { font-size: .72rem; color: var(--blue); font-weight: 700; display: block; margin-bottom: 2px; }
 .txt-echo .caret { display: inline-block; width: 2px; height: 1.1em; background: var(--blue); vertical-align: -2px; animation: blink 1s step-end infinite; }
 @keyframes blink { 50% { opacity: 0; } }
 
@@ -192,6 +192,7 @@ html, body {
 .prac-done__stat b { display: block; font-size: 1.4rem; }
 .prac-done__stat span { font-size: .76rem; color: var(--gray); }
 .prac-done__actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.prac-done__hint { margin-top: 10px; font-size: .8rem; color: var(--gray); }
 
 /* ===== 토스트 ===== */
 .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 12px 18px; border-radius: 12px; font-size: .9rem; z-index: 50; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
@@ -205,6 +206,7 @@ html, body {
   .key__shift { font-size: .58rem; }
   .key__lat { display: none; }
   .txt-target { font-size: 1.25rem; line-height: 1.9; }
+  .txt-echo { font-size: 1.25rem; line-height: 1.9; }
   .finger-dot { width: 30px; font-size: .54rem; }
   .finger-dot .dot { width: 15px; height: 15px; }
 }
