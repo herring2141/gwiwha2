@@ -52,6 +52,11 @@
           <span class="mode-card__title" data-i18n="mode.syllable.t">낱글자 연습</span>
           <span class="mode-card__sub" data-i18n="mode.syllable.s">자음+모음을 모아 한 글자씩 완성</span>
         </button>
+        <button class="mode-card" data-mode="word">
+          <span class="mode-card__icon">낱</span>
+          <span class="mode-card__title" data-i18n="mode.word.t">낱말 연습</span>
+          <span class="mode-card__sub" data-i18n="mode.word.s">비슷한 낱말을 빠르게 구별하며 치기</span>
+        </button>
         <button class="mode-card" data-mode="short">
           <span class="mode-card__icon">📄</span>
           <span class="mode-card__title" data-i18n="mode.short.t">단문 연습</span>
@@ -102,10 +107,14 @@
       <!-- 다음 키 안내 -->
       <div class="nextkey" id="nextKey"></div>
 
+      <!-- 발음 듣기 토글 (자리·낱글자 전용) -->
+      <div class="prac-tools">
+        <button id="soundToggle" class="sound-toggle hidden" type="button" aria-pressed="false"></button>
+      </div>
+
       <!-- 가상 키보드 -->
       <div class="kbd-wrap">
         <div id="keyboard" class="keyboard" role="group" aria-label="가상 키보드"></div>
-        <div class="hands" id="hands"></div>
       </div>
 
       <!-- 완료 -->

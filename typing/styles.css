@@ -135,9 +135,14 @@ html, body {
 /* ===== 다음 키 안내 ===== */
 .nextkey { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 30px; margin-bottom: 10px; font-size: .95rem; color: var(--gray); flex-wrap: wrap; }
 .nextkey b { color: var(--ink); }
-.nextkey .nk-jamo { font-size: 1.2rem; font-weight: 800; color: var(--blue); }
+.nextkey .nk-jamo { font-size: 1.45rem; font-weight: 800; color: var(--blue); }
 .nextkey .nk-finger { background: var(--blue-soft); color: var(--blue-dark); border-radius: 999px; padding: 3px 10px; font-weight: 700; font-size: .85rem; }
 .nextkey .nk-shift { background: var(--amber); color: #fff; border-radius: 999px; padding: 3px 10px; font-weight: 700; font-size: .82rem; }
+
+/* ===== 발음 듣기 토글 ===== */
+.prac-tools { display: flex; justify-content: flex-end; margin-bottom: 8px; min-height: 1px; }
+.sound-toggle { border: 1px solid var(--line); background: #fff; color: var(--gray); border-radius: 999px; padding: 7px 16px; font-size: .9rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+.sound-toggle[aria-pressed="true"] { background: var(--blue-soft); color: var(--blue-dark); border-color: var(--blue); }
 
 /* ===== 가상 키보드 ===== */
 .kbd-wrap { position: relative; }
@@ -148,8 +153,8 @@ html, body {
   background: #fff; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
   font-family: inherit; cursor: pointer; padding: 2px; transition: transform .05s, box-shadow .1s;
 }
-.key__main { font-size: 1.05rem; font-weight: 700; color: var(--ink); }
-.key__shift { position: absolute; top: 3px; right: 5px; font-size: .68rem; color: var(--gray); }
+.key__main { font-size: 1.25rem; font-weight: 700; color: var(--ink); }
+.key__shift { position: absolute; top: 3px; right: 5px; font-size: .76rem; color: var(--gray); }
 .key__lat { position: absolute; bottom: 3px; left: 5px; font-size: .58rem; color: #b6bdc9; }
 .key.wide { flex: 1.7 1 0; }
 .key.wider { flex: 2.2 1 0; }
@@ -175,14 +180,6 @@ html, body {
 .key.pressed { transform: translateY(1px) scale(.97); }
 .key.miss { animation: missflash .3s; }
 @keyframes missflash { 0%,100% { box-shadow: 0 0 0 0 var(--red); } 40% { box-shadow: 0 0 0 3px var(--red); background: var(--red-soft); } }
-
-/* 손 안내 */
-.hands { display: flex; justify-content: center; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
-.finger-dot { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: .62rem; color: var(--gray); width: 40px; }
-.finger-dot .dot { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--line); background: #fff; }
-.finger-dot.on .dot { background: var(--blue); border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
-.finger-dot.on { color: var(--blue-dark); font-weight: 700; }
-.finger-gap { width: 14px; }
 
 /* ===== 완료 ===== */
 .prac-done { margin-top: 16px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; text-align: center; }
@@ -212,17 +209,23 @@ html, body {
 @media (max-width: 560px) {
   :root { font-size: 16px; }
   .mode-grid { grid-template-columns: 1fr; }
-  .key { height: 42px; }
-  .key__main { font-size: .92rem; }
-  .key__shift { font-size: .58rem; }
+  .key { height: 46px; }
+  .key__main { font-size: 1.08rem; }
+  .key__shift { font-size: .64rem; }
   .key__lat { display: none; }
   .tline-target { font-size: 1.2rem; line-height: 1.6; }
   .tline-echo { font-size: 1.2rem; line-height: 1.6; }
-  .finger-dot { width: 30px; font-size: .54rem; }
-  .finger-dot .dot { width: 15px; height: 15px; }
+  /* 자리연습 큐: 화면 밖으로 안 넘치게 셀 축소 */
+  .pos-queue { gap: 7px; }
+  .pos-cell { width: 34px; height: 48px; font-size: 1.35rem; }
+  .pos-cell.is-current { width: 74px; height: 74px; font-size: 2.7rem; }
 }
 @media (max-width: 380px) {
   .keyboard { padding: 6px; gap: 4px; }
   .kbd-row { gap: 4px; }
-  .key { height: 38px; }
+  .key { height: 40px; }
+  .key__main { font-size: 1rem; }
+  .pos-queue { gap: 5px; }
+  .pos-cell { width: 30px; }
+  .pos-cell.is-current { width: 66px; height: 66px; font-size: 2.4rem; }
 }

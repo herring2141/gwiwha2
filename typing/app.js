@@ -33,7 +33,10 @@
       'list.syllable': '쉬운 글자부터 한 글자씩 완성해 보세요.',
       'list.short': '짧은 문장을 따라 치며 손을 풀어요.',
       'list.long': '귀화 작문 시험에 나오는 주제의 모범답안입니다. 의미를 보며 따라 치세요.',
-      'sec.sec': '초', 'best.label': '최고', 'topic.label': '주제', 'echo.label': '내가 친 것'
+      'sec.sec': '초', 'best.label': '최고', 'topic.label': '주제', 'echo.label': '내가 친 것',
+      'mode.word.t': '낱말 연습', 'mode.word.s': '비슷한 낱말을 빠르게 구별하며 치기',
+      'list.word': '비슷하게 생긴 낱말을 빠르게 알아보고 정확히 치는 연습이에요.',
+      'sound.on': '🔊 소리 켜짐', 'sound.off': '🔇 소리 듣기'
     },
     zh: {
       'app.title': '韩文打字练习', 'app.toQuiz': '📚 入籍App',
@@ -54,7 +57,10 @@
       'list.syllable': '从简单的字开始，一个字一个字完成。',
       'list.short': '跟着打短句子，活动手指。',
       'list.long': '这些是入籍作文考试主题的范文。看着意思跟着打。',
-      'sec.sec': '秒', 'best.label': '最佳', 'topic.label': '主题', 'echo.label': '我打的'
+      'sec.sec': '秒', 'best.label': '最佳', 'topic.label': '主题', 'echo.label': '我打的',
+      'mode.word.t': '单词练习', 'mode.word.s': '快速辨别相似的词并打出',
+      'list.word': '快速识别外形相似的词并准确打出。',
+      'sound.on': '🔊 声音开', 'sound.off': '🔇 听发音'
     },
     vi: {
       'app.title': 'Luyện gõ tiếng Hàn', 'app.toQuiz': '📚 App nhập tịch',
@@ -75,7 +81,10 @@
       'list.syllable': 'Bắt đầu từ chữ dễ, hoàn thành từng chữ một.',
       'list.short': 'Gõ theo câu ngắn để làm nóng tay.',
       'list.long': 'Đây là bài văn mẫu cho các chủ đề thi viết nhập tịch. Vừa xem nghĩa vừa gõ theo.',
-      'sec.sec': ' giây', 'best.label': 'Tốt nhất', 'topic.label': 'Chủ đề', 'echo.label': 'Tôi đã gõ'
+      'sec.sec': ' giây', 'best.label': 'Tốt nhất', 'topic.label': 'Chủ đề', 'echo.label': 'Tôi đã gõ',
+      'mode.word.t': 'Luyện từ', 'mode.word.s': 'Phân biệt nhanh các từ giống nhau và gõ',
+      'list.word': 'Nhận diện nhanh các từ trông giống nhau và gõ chính xác.',
+      'sound.on': '🔊 Bật âm', 'sound.off': '🔇 Nghe âm'
     },
     th: {
       'app.title': 'ฝึกพิมพ์ภาษาเกาหลี', 'app.toQuiz': '📚 แอปแปลงสัญชาติ',
@@ -96,7 +105,10 @@
       'list.syllable': 'เริ่มจากตัวอักษรง่าย ๆ ทำให้เสร็จทีละตัว',
       'list.short': 'พิมพ์ตามประโยคสั้นเพื่ออุ่นเครื่องนิ้ว',
       'list.long': 'นี่คือเรียงความตัวอย่างของหัวข้อสอบเขียนแปลงสัญชาติ ดูความหมายแล้วพิมพ์ตาม',
-      'sec.sec': ' วิ', 'best.label': 'ดีที่สุด', 'topic.label': 'หัวข้อ', 'echo.label': 'ที่ฉันพิมพ์'
+      'sec.sec': ' วิ', 'best.label': 'ดีที่สุด', 'topic.label': 'หัวข้อ', 'echo.label': 'ที่ฉันพิมพ์',
+      'mode.word.t': 'ฝึกคำศัพท์', 'mode.word.s': 'แยกแยะคำที่คล้ายกันอย่างรวดเร็วแล้วพิมพ์',
+      'list.word': 'ฝึกจำคำที่หน้าตาคล้ายกันอย่างรวดเร็วและพิมพ์ให้ถูก',
+      'sound.on': '🔊 เปิดเสียง', 'sound.off': '🔇 ฟังเสียง'
     }
   };
   function readInheritedLang() {
@@ -123,6 +135,15 @@
     { title: { ko: 'ㅇ + 모든 모음', zh: 'ㅇ + 所有元音', vi: 'ㅇ + tất cả nguyên âm', th: 'ㅇ + สระทั้งหมด' }, text: '아 야 어 여 오 요 우 유 으 이' },
     { title: { ko: '받침이 있는 글자', zh: '带收音的字', vi: 'Chữ có patchim', th: 'ตัวอักษรที่มีตัวสะกด' }, text: '강 산 물 밤 곰 집 발 손 눈 별 꽃 옷' },
     { title: { ko: '쉬운 낱말', zh: '简单词语', vi: 'Từ đơn giản', th: 'คำง่าย ๆ' }, text: '한국 사랑 가족 친구 학교 감사 행복 우리 사람 음식 한글 나라' }
+  ];
+  // 비슷하게 생긴 낱말 변별 — 전부 실재 한국어 낱말
+  var WORD_STEPS = [
+    { title: { ko: '비슷한 모음 (머·마·미)', zh: '相似元音（머·마·미）', vi: 'Nguyên âm giống nhau (머·마·미)', th: 'สระคล้ายกัน (머·마·미)' }, text: '마리 머리 미리 모래 무리 아마 어머니 이미 머루 마루 미로' },
+    { title: { ko: '받침 ㄹ 낱말', zh: '收音ㄹ的词', vi: 'Từ có patchim ㄹ', th: 'คำที่มีตัวสะกด ㄹ' }, text: '물 불 풀 굴 술 줄 글 길 김 들 달 별' },
+    { title: { ko: '된소리 변별', zh: '紧音辨别', vi: 'Phân biệt âm căng', th: 'แยกเสียงหนัก' }, text: '자다 짜다 차다 사다 싸다 타다 따다 가다 까다 하다 파다' },
+    { title: { ko: '비슷한 두 글자', zh: '相似的两字词', vi: 'Từ hai chữ giống nhau', th: 'คำสองพยางค์ที่คล้ายกัน' }, text: '나무 너무 노래 누나 나비 너비 모자 모기 바다 바지 가방 가족' },
+    { title: { ko: '받침 변별 (ㄴ·ㅇ·ㅁ)', zh: '收音辨别（ㄴ·ㅇ·ㅁ）', vi: 'Phân biệt patchim (ㄴ·ㅇ·ㅁ)', th: 'แยกตัวสะกด (ㄴ·ㅇ·ㅁ)' }, text: '간 강 감 산 상 삼 반 방 밤 손 솔 솜' },
+    { title: { ko: '헷갈리는 낱말', zh: '容易混淆的词', vi: 'Từ dễ nhầm lẫn', th: 'คำที่สับสนง่าย' }, text: '의사 이사 시계 세계 사람 사랑 친구 친척 학교 학생 가게 가계' }
   ];
   var CURATED_SHORT = [
     { text: '안녕하세요.', trans: { zh: '你好。', vi: 'Xin chào.', th: 'สวัสดีค่ะ' } },
@@ -158,6 +179,7 @@
   var MODES = {
     position: { kind: 'position', title: { ko: '자리 연습', zh: '指位练习', vi: 'Luyện vị trí phím', th: 'ฝึกตำแหน่งแป้น' }, desc: 'list.position', items: POSITION_STEPS },
     syllable: { kind: 'text', title: { ko: '낱글자 연습', zh: '单字练习', vi: 'Luyện từng chữ', th: 'ฝึกตัวอักษร' }, desc: 'list.syllable', items: SYLLABLE_STEPS },
+    word: { kind: 'text', title: { ko: '낱말 연습', zh: '单词练习', vi: 'Luyện từ', th: 'ฝึกคำศัพท์' }, desc: 'list.word', items: WORD_STEPS },
     short: { kind: 'text', title: { ko: '단문 연습', zh: '短句练习', vi: 'Luyện câu ngắn', th: 'ฝึกประโยคสั้น' }, desc: 'list.short', items: SHORT_ITEMS },
     long: { kind: 'text', title: { ko: '귀화 작문 연습', zh: '入籍作文练习', vi: 'Luyện viết bài nhập tịch', th: 'ฝึกเขียนเรียงความแปลงสัญชาติ' }, desc: 'list.long', items: LONG_ITEMS }
   };
@@ -211,25 +233,36 @@
       });
       kb.appendChild(r);
     });
-    buildHands();
-  }
-
-  var FINGER_ORDER = [['L', 'pinky'], ['L', 'ring'], ['L', 'middle'], ['L', 'index'], 'gap', ['R', 'index'], ['R', 'middle'], ['R', 'ring'], ['R', 'pinky']];
-  function buildHands() {
-    var h = $('#hands'); h.innerHTML = '';
-    FINGER_ORDER.forEach(function (fo) {
-      if (fo === 'gap') { var g = document.createElement('div'); g.className = 'finger-gap'; h.appendChild(g); return; }
-      var d = document.createElement('div');
-      d.className = 'finger-dot';
-      d.dataset.hand = fo[0]; d.dataset.finger = fo[1];
-      d.innerHTML = '<span class="dot"></span><span class="lbl">' + esc(HG.HAND_LABEL[lang][fo[0]]) + '<br>' + esc(HG.FINGER_LABEL[lang][fo[1]]) + '</span>';
-      h.appendChild(d);
-    });
   }
 
   // ===== 상태 =====
   var state = null;
   var timerId = null;
+  var soundOn = (localStorage.getItem('typing_sound') === '1');
+
+  // ===== 발음(소리) — 자음은 +ㅡ(므·느), 모음은 ㅇ+(아·어). 검증된 조합 오토마타 재사용 =====
+  function jamoToSyllable(j) {
+    if (HG.isCons(j)) return HG.compose([{ type: 'jamo', jamo: j }, { type: 'jamo', jamo: 'ㅡ' }]);
+    if (HG.isVowel(j)) return HG.compose([{ type: 'jamo', jamo: 'ㅇ' }, { type: 'jamo', jamo: j }]);
+    return '';
+  }
+  function speakJamo(j) {
+    if (!soundOn || !j) return;
+    if (!('speechSynthesis' in window)) return;
+    var syl = jamoToSyllable(j); if (!syl) return;
+    try { window.speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(syl); u.lang = 'ko-KR'; u.rate = 0.8; window.speechSynthesis.speak(u); } catch (e) {}
+  }
+  function updateSoundToggle() {
+    var b = $('#soundToggle'); if (!b) return;
+    b.textContent = soundOn ? t('sound.on') : t('sound.off');
+    b.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
+  }
+  function toggleSound() {
+    soundOn = !soundOn;
+    try { localStorage.setItem('typing_sound', soundOn ? '1' : '0'); } catch (e) {}
+    updateSoundToggle();
+    if (soundOn) { var exp = currentExpected(); if (exp && exp.jamo) speakJamo(exp.jamo); }
+  }
 
   function newState(mode, idx) {
     var cfg = MODES[mode];
@@ -240,9 +273,10 @@
       s.posIdx = 0;
       s.total = s.seq.length;
     } else {
-      s.target = item.text;
-      s.tokens = HG.textToKeystrokes(item.text);
-      s.chars = HG.sanitize(item.text).split('');
+      var txt = expandText(item.text, mode);
+      s.target = txt;
+      s.tokens = HG.textToKeystrokes(txt);
+      s.chars = HG.sanitize(txt).split('');
       s.lines = wrapLines(s.chars);
       s.pos = 0;
       s.total = s.tokens.length;
@@ -251,7 +285,17 @@
   }
 
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
-  function buildDrill(set) { return set.slice().concat(shuffle(set)).concat(shuffle(set)); }
+  // 자리연습: 한 세션이 너무 짧지 않게 최소 ~40회까지 반복(세트 단위로 섞어 이어붙임)
+  function buildDrill(set) { var out = set.slice(); while (out.length < 40) out = out.concat(shuffle(set)); return out; }
+  // 텍스트 모드: 너무 짧은 항목은 음절 최소치까지 통째로 반복
+  var MIN_SYL = { syllable: 24 };
+  function sylCount(text) { return (String(text).match(/[가-힣ㄱ-ㅎㅏ-ㅣ]/g) || []).length; }
+  function expandText(text, mode) {
+    var min = MIN_SYL[mode] || 0; if (!min) return text;
+    var base = String(text).trim(), out = base, g = 0;
+    while (sylCount(out) < min && g++ < 20) out += ' ' + base;
+    return out;
+  }
 
   // 단어(공백) 단위로 줄 분할 → 각 줄 = [start,end) 글자 인덱스(끝의 공백 제외)
   function wrapLines(chars) {
@@ -284,7 +328,7 @@
       b.className = 'select-item';
       var title, sub = '';
       if (cfg.kind === 'position') { title = L(item.title); sub = item.set.join(' '); }
-      else if (mode === 'syllable') { title = L(item.title); sub = item.text; }
+      else if (mode === 'syllable' || mode === 'word') { title = L(item.title); sub = item.text; }
       else if (mode === 'long') { title = item.topic; sub = (lang === 'ko') ? item.text : ((item.trans && item.trans[lang]) || item.text); }
       else { title = item.text; sub = (lang === 'ko') ? '' : ((item.trans && item.trans[lang]) || ''); }
       var best = getBest(mode, i);
@@ -302,7 +346,12 @@
   function startPractice(mode, idx) {
     state = newState(mode, idx);
     var cfg = MODES[mode];
-    $('#pracTitle').textContent = (cfg.kind === 'position' ? L(state.item.title) : L(cfg.title));
+    var perItemTitle = (mode === 'position' || mode === 'syllable' || mode === 'word');
+    $('#pracTitle').textContent = (perItemTitle && state.item.title) ? L(state.item.title) : L(cfg.title);
+    // 발음 듣기 토글: 글자 단위 연습(자리·낱글자)에서만 — 문장·장문엔 불필요
+    var soundModes = (mode === 'position' || mode === 'syllable');
+    var stog = $('#soundToggle');
+    if (stog) { stog.classList.toggle('hidden', !soundModes); updateSoundToggle(); }
     var meta = $('#pracMeta');
     var tr = state.item.trans && state.item.trans[lang];
     if (state.kind === 'text' && (state.item.topic || (tr && lang !== 'ko'))) {
@@ -347,6 +396,7 @@
     if (ok) {
       if (state.kind === 'position') state.posIdx++; else state.pos++;
       state.correct++;
+      if (soundOn && (state.mode === 'position' || state.mode === 'syllable') && exp.jamo) speakJamo(exp.jamo);
       flashKey(code, 'pressed');
       render();
       updateStats();
@@ -487,7 +537,6 @@
 
   function highlightKeyboard() {
     $$('.key.next, .key.next-shift').forEach(function (el) { el.classList.remove('next', 'next-shift'); });
-    $$('.finger-dot.on').forEach(function (el) { el.classList.remove('on'); });
     var exp = currentExpected();
     if (!exp || !exp.key) return;
     var key = exp.key;
@@ -496,10 +545,6 @@
       var f = HG.FINGER[key.code];
       var shiftCode = (f && f.hand === 'L') ? 'ShiftRight' : 'ShiftLeft';
       if (keyEls[shiftCode]) keyEls[shiftCode].classList.add('next-shift');
-    }
-    var fin = HG.FINGER[key.code];
-    if (fin && fin.finger !== 'thumb') {
-      $$('.finger-dot').forEach(function (d) { if (d.dataset.hand === fin.hand && d.dataset.finger === fin.finger) d.classList.add('on'); });
     }
   }
 
@@ -548,7 +593,7 @@
 
   // ===== 저장 =====
   function bestStore() { try { return JSON.parse(localStorage.getItem('typing_best_v1') || '{}'); } catch (e) { return {}; } }
-  function getBest(mode, idx) { return bestStore()[mode + ':' + idx] || 0; }
+  function getBest(mode, idx) { return Math.min(9999, bestStore()[mode + ':' + idx] || 0); }
   function setBest(mode, idx, v) { var s = bestStore(); s[mode + ':' + idx] = v; localStorage.setItem('typing_best_v1', JSON.stringify(s)); }
 
   // ===== 유틸 =====
@@ -562,7 +607,6 @@
     localStorage.setItem('typing_lang', l);
     try { localStorage.setItem('nq_lang', JSON.stringify(l)); } catch (e) {} // 귀화앱과 동기화
     applyI18n();
-    buildHands();
     if (!$('#view-list').classList.contains('hidden')) goList(state.mode);
     else if (!$('#view-practice').classList.contains('hidden')) startPractice(state.mode, state.idx);
   }
@@ -571,6 +615,7 @@
     document.documentElement.lang = lang;
     $$('[data-i18n]').forEach(function (el) { el.textContent = t(el.getAttribute('data-i18n')); });
     $('#langBtn').textContent = '🌐 ' + LANG_NAME[lang];
+    updateSoundToggle();
   }
 
   // 언어 선택 picker (귀화앱 방식)
@@ -604,6 +649,7 @@
     $$('.mode-card').forEach(function (c) { c.addEventListener('click', function () { goList(c.dataset.mode); }); });
     $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { if (b.dataset.go === 'home') goHome(); }); });
     $('#pracBack').addEventListener('click', function () { stopTimer(); goList(state.mode); });
+    var stog = $('#soundToggle'); if (stog) stog.addEventListener('click', toggleSound);
   }
 
   // ===== 초기화 =====
