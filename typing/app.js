@@ -303,7 +303,15 @@
       s.posIdx = 0;
       s.total = s.seq.length;
     } else {
-      var txt = expandText(item.text, mode);
+      var txt;
+      if (mode === 'short') {
+        // 같은 문장 반복 대신 연속된 4문장을 이어붙여 분량을 늘림(끝에서는 앞으로 순환)
+        var items = cfg.items, n = items.length, parts = [];
+        for (var k = 0; k < 4 && k < n; k++) parts.push(items[(idx + k) % n].text);
+        txt = parts.join(' ');
+      } else {
+        txt = expandText(item.text, mode);
+      }
       s.target = txt;
       s.tokens = HG.textToKeystrokes(txt);
       s.chars = HG.sanitize(txt).split('');
@@ -315,10 +323,10 @@
   }
 
   function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
-  // 자리연습: 한 세션이 너무 짧지 않게 최소 ~40회까지 반복(세트 단위로 섞어 이어붙임)
-  function buildDrill(set) { var out = set.slice(); while (out.length < 40) out = out.concat(shuffle(set)); return out; }
-  // 텍스트 모드: 너무 짧은 항목은 음절 최소치까지 통째로 반복
-  var MIN_SYL = { syllable: 24 };
+  // 자리연습: 한 세션을 충분히 길게(~180회) — 세트 단위로 섞어 이어붙임
+  function buildDrill(set) { var out = set.slice(); while (out.length < 175) out = out.concat(shuffle(set)); return out; }
+  // 텍스트 모드: 음절 최소치까지 통째로 반복 (낱글자·낱말). 단문은 newState에서 여러 문장 이어붙임. 귀화작문(long)은 제외.
+  var MIN_SYL = { syllable: 110, word: 95 };
   function sylCount(text) { return (String(text).match(/[가-힣ㄱ-ㅎㅏ-ㅣ]/g) || []).length; }
   function expandText(text, mode) {
     var min = MIN_SYL[mode] || 0; if (!min) return text;
